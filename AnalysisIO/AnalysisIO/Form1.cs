@@ -15,6 +15,7 @@ namespace AnalysisIO
         public Form1()
         {
             InitializeComponent();
+            new SourceImporter.SourceImporter();
         }
     }
 }
