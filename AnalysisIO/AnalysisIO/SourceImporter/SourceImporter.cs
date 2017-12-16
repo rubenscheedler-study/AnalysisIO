@@ -5,7 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ICSharpCode.NRefactory.CSharp;
+using ICSharpCode.NRefactory.CSharp.Resolver;
+using ICSharpCode.NRefactory.Semantics;
 using ICSharpCode.SharpZipLib.Zip;
+using StringIndexOf;
 
 namespace AnalysisIO.SourceImporter
 {
@@ -34,6 +38,29 @@ namespace AnalysisIO.SourceImporter
 
             FastZip entry = new FastZip();
             entry.ExtractZip("rationally.zip","repos/rationally/versions",null);
+
+            string[] versions = Directory.GetDirectories("repos/rationally/versions");
+            string solutionFilePath = Directory.GetFiles(versions[0]).ToList().First(f => f.EndsWith(".sln"));
+            Solution solution = new Solution(solutionFilePath);
+            var x = 5;
+
+            foreach (var file in solution.AllFiles)
+            {
+                var astResolver = new CSharpAstResolver(file.Project.Compilation, file.SyntaxTree, file.UnresolvedTypeSystemForFile);
+                foreach (var invocation in file.SyntaxTree.Descendants.OfType<InvocationExpression>())
+                {
+                    // Retrieve semantics for the invocation
+                    var rr = astResolver.Resolve(invocation) as InvocationResolveResult;
+                    if (rr == null)
+                    {
+                        // Not an invocation resolve result - e.g. could be a UnknownMemberResolveResult instead
+                        continue;
+                    }
+                    file.Invocations.Add(invocation);
+                }
+            }
+
+            var y = 6;
         }
     }
 }
