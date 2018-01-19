@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AnalysisIO.Tree;
+using AnalysisIO.Visitor;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Resolver;
 using ICSharpCode.NRefactory.Semantics;
@@ -13,8 +15,9 @@ using StringIndexOf;
 
 namespace AnalysisIO.SourceImporter
 {
-    class SourceImporter
+    public class SourceImporter
     {
+        public static Tree.Tree Tree = new Tree.Tree();
         public SourceImporter()
         {
             AsyncMethod();
@@ -44,10 +47,18 @@ namespace AnalysisIO.SourceImporter
             Solution solution = new Solution(solutionFilePath);
             var x = 5;
 
+            Tree.Identifier = solutionFilePath;
+
             foreach (var file in solution.AllFiles)
             {
-                var astResolver = new CSharpAstResolver(file.Project.Compilation, file.SyntaxTree, file.UnresolvedTypeSystemForFile);
-                foreach (var invocation in file.SyntaxTree.Descendants.OfType<InvocationExpression>())
+                CSharpAstResolver astResolver = new CSharpAstResolver(file.Project.Compilation, file.SyntaxTree, file.UnresolvedTypeSystemForFile);
+                file.SyntaxTree.AcceptVisitor(new NamespaceVisitor(), astResolver);
+            }
+
+            foreach (var file in solution.AllFiles)
+            {
+                CSharpAstResolver astResolver = new CSharpAstResolver(file.Project.Compilation, file.SyntaxTree, file.UnresolvedTypeSystemForFile);
+                /*foreach (var invocation in file.SyntaxTree.Descendants.OfType<InvocationExpression>())
                 {
                     // Retrieve semantics for the invocation
                     var rr = astResolver.Resolve(invocation) as InvocationResolveResult;
@@ -57,10 +68,13 @@ namespace AnalysisIO.SourceImporter
                         continue;
                     }
                     file.Invocations.Add(invocation);
-                }
+                }*/
+                file.SyntaxTree.AcceptVisitor(new DependencyVisitor(), astResolver);
             }
 
             var y = 6;
+
         }
+        
     }
 }

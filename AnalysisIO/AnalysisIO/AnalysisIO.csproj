@@ -223,6 +223,14 @@
     <Compile Include="Resolver\Solution.cs" />
     <Compile Include="Resolver\Test.cs" />
     <Compile Include="SourceImporter\SourceImporter.cs" />
+    <Compile Include="Tree\ClassNode.cs" />
+    <Compile Include="Tree\NamespaceNode.cs" />
+    <Compile Include="Tree\ProjectNode.cs" />
+    <Compile Include="Tree\SolutionNode.cs" />
+    <Compile Include="Tree\Tree.cs" />
+    <Compile Include="Tree\TreeNode.cs" />
+    <Compile Include="Visitor\DependencyVisitor.cs" />
+    <Compile Include="Visitor\NamespaceVisitor.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
