@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 
@@ -76,9 +77,11 @@ namespace Resolver
 			this.Solution = solution;
 			this.Title = title;
 			this.FileName = fileName;
-			
-			// Use MSBuild to open the .csproj
-			var msbuildProject = new Microsoft.Build.Evaluation.Project(fileName);
+            //ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            // Use MSBuild to open the .csproj
+            //Environment.SetEnvironmentVariable("MSBUILD_EXE_PATH", @"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe");
+		    //var a = System.Reflection.Assembly.GetExecutingAssembly().Location + ".config";
+            var msbuildProject = new Microsoft.Build.Evaluation.Project(fileName);
 			// Figure out some compiler settings
 			this.AssemblyName = msbuildProject.GetPropertyValue("AssemblyName");
 			this.CompilerSettings.AllowUnsafeBlocks = GetBoolProperty(msbuildProject, "AllowUnsafeBlocks") ?? false;

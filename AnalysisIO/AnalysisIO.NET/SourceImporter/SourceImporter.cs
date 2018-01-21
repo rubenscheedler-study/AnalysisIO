@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AnalysisIO.Tree;
+using AnalysisIO.NET.Tree;
 using AnalysisIO.Visitor;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Resolver;
@@ -13,18 +13,24 @@ using ICSharpCode.NRefactory.Semantics;
 using ICSharpCode.SharpZipLib.Zip;
 using Resolver;
 
-namespace AnalysisIO.SourceImporter
+namespace AnalysisIO.NET.SourceImporter
 {
     public class SourceImporter
     {
+        private static string PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/analysisIO/rationally/";
         public static Tree.Tree Tree = new Tree.Tree();
         public SourceImporter()
         {
-            AsyncMethod();
         }
 
-        public async void AsyncMethod()
+        public async Task<Tree.Tree> BuildTree()
         {
+            //create path if needed
+            if (!Directory.Exists(PATH))
+            {
+                Directory.CreateDirectory(PATH);
+            }
+
             var client = new GitHubClient(new ProductHeaderValue("rationally"));
 
             var releases = client.Repository.Release.GetAll("rationally", "rationally_visio");
@@ -35,14 +41,15 @@ namespace AnalysisIO.SourceImporter
                 latest.TagName,
                 latest.Name);
 
-            var archive = await client.Repository.Content.GetArchive("rationally", "rationally_visio",ArchiveFormat.Zipball);
-
-            File.WriteAllBytes("rationally.zip", archive);
+            //var a = await client.Repository.Content.GetAllContents("rationally", "rationally_visio");
+            var task = client.Repository.Content.GetArchive("rationally", "rationally_visio",ArchiveFormat.Zipball);
+            var archive = await task;
+            File.WriteAllBytes(PATH + "rationally.zip", archive);
 
             FastZip entry = new FastZip();
-            entry.ExtractZip("rationally.zip","repos/rationally/versions",null);
+            entry.ExtractZip(PATH + "rationally.zip",PATH,null);
 
-            string[] versions = Directory.GetDirectories("repos/rationally/versions");
+            string[] versions = Directory.GetDirectories(PATH);
             string solutionFilePath = Directory.GetFiles(versions[0]).ToList().First(f => f.EndsWith(".sln"));
             Solution solution = new Solution(solutionFilePath);
             var x = 5;
@@ -72,7 +79,7 @@ namespace AnalysisIO.SourceImporter
                 file.SyntaxTree.AcceptVisitor(new DependencyVisitor(), astResolver);
             }
 
-            var y = 6;
+            return Tree;
 
         }
         

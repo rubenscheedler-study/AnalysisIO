@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace AnalysisIO.Properties {
+namespace AnalysisIO_Console.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

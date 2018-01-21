@@ -7,8 +7,8 @@
     <ProjectGuid>{54E87BCA-4537-42BF-ACF6-CAA26452DEF6}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AnalysisIO</RootNamespace>
-    <AssemblyName>AnalysisIO</AssemblyName>
+    <RootNamespace>AnalysisIO_Console</RootNamespace>
+    <AssemblyName>AnalysisIO_Console</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -217,11 +217,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resolver\CSharpFile.cs" />
     <Compile Include="Resolver\CSharpProject.cs" />
-    <Compile Include="Resolver\ExpressionWithType.cs" />
-    <Compile Include="Resolver\FindRedundantTypeInLocalVariableDeclaration.cs" />
-    <Compile Include="Resolver\Program.cs" />
     <Compile Include="Resolver\Solution.cs" />
-    <Compile Include="Resolver\Test.cs" />
     <Compile Include="SourceImporter\SourceImporter.cs" />
     <Compile Include="Tree\ClassNode.cs" />
     <Compile Include="Tree\NamespaceNode.cs" />
