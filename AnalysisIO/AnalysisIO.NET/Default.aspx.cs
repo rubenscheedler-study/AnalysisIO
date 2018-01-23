@@ -15,9 +15,9 @@ namespace AnalysisIO.NET
     {
         protected async void Page_Load(object sender, EventArgs e)
         {
-            SourceImporter.SourceImporter importer = new SourceImporter.SourceImporter();
-            Tree.Tree t = await importer.BuildTree();
-            uxJson.InnerHtml = JsonConvert.SerializeObject(t);
+            //SourceImporter.SourceImporter importer = new SourceImporter.SourceImporter();
+            //Tree.Tree t = await importer.BuildTree();
+            //uxJson.InnerHtml = JsonConvert.SerializeObject(t);
             /*var client = new GitHubClient(new ProductHeaderValue("rationally"));
 
             var releases = client.Repository.Release.GetAll("rationally", "rationally_visio");

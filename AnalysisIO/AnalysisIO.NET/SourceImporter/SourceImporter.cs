@@ -51,6 +51,8 @@ namespace AnalysisIO.NET.SourceImporter
 
             string[] versions = Directory.GetDirectories(PATH);
             string solutionFilePath = Directory.GetFiles(versions[0]).ToList().First(f => f.EndsWith(".sln"));
+            //Environment.SetEnvironmentVariable("MSBUILD_EXE_PATH", @"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe");
+            Environment.SetEnvironmentVariable("VSINSTALLDIR", "D:\\VisualStudio2015");
             Solution solution = new Solution(solutionFilePath);
             var x = 5;
 
