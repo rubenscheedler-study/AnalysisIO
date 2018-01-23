@@ -22,7 +22,7 @@ namespace AnalysisIO.Visitor
                 Tree.Tree t = SourceImporter.SourceImporter.Tree;
 
                 //1) target node
-                ClassNode targetNode = new ClassNode(target.Type.Name, target);
+                ClassNode targetNode = new ClassNode(target.Type.FullName, target);
                 targetNode = t.AddOrGetClassNode(target.Type.Namespace, targetNode);//override if already in tree with that node
 
                 if (targetNode != null)
@@ -32,7 +32,7 @@ namespace AnalysisIO.Visitor
                     TypeDeclaration classDeclaration = invocationExpression.Ancestors.Where(a => a is TypeDeclaration).Cast<TypeDeclaration>().First();
                     //resolve the class declaration
                     var resolvedClass = astResolver.Resolve(classDeclaration) as TypeResolveResult;
-                    ClassNode callerNode = new ClassNode(resolvedClass.Type.Name, resolvedClass);
+                    ClassNode callerNode = new ClassNode(resolvedClass.Type.FullName, resolvedClass);
                     callerNode = t.AddOrGetClassNode(resolvedClass.Type.Namespace, callerNode); //override if already in tree with that node
 
                     //3) edge (dependency) between caller and target

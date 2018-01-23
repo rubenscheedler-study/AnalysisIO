@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -13,11 +15,10 @@ namespace AnalysisIO.NET
 {
     public partial class Default : System.Web.UI.Page
     {
-        protected async void Page_Load(object sender, EventArgs e)
+        protected void Page_Load(object sender, EventArgs e)
         {
-            SourceImporter.SourceImporter importer = new SourceImporter.SourceImporter();
-            Tree.Tree t = await importer.BuildTree();
-            uxJson.InnerHtml = JsonConvert.SerializeObject(t);
+            //SourceImporter.SourceImporter importer = new SourceImporter.SourceImporter();
+            //uxJson.InnerHtml = JsonConvert.SerializeObject(t);
             /*var client = new GitHubClient(new ProductHeaderValue("rationally"));
 
             var releases = client.Repository.Release.GetAll("rationally", "rationally_visio");
@@ -35,6 +36,23 @@ namespace AnalysisIO.NET
 
             FastZip entry = new FastZip();
             entry.ExtractZip("rationally.zip", "repos/rationally/versions", null);*/
+
+            // Start the child process.
+            Process p = new Process();
+            // Redirect the output stream of the child process.
+            p.StartInfo.UseShellExecute = false;
+            p.StartInfo.RedirectStandardOutput = true;
+            p.StartInfo.FileName = "C:/Users/Ruben/Source/Repos/AnalysisIO/AnalysisIO/AnalysisIO/bin/Debug/AnalysisIO_Console.exe";
+            p.StartInfo.Arguments = "PowerShell PowerShell 6.0.0";
+            p.Start();
+            // Do not wait for the child process to exit before
+            // reading to the end of its redirected stream.
+            // p.WaitForExit();
+            // Read the output stream first and then wait.
+            uxJson.InnerHtml = p.StandardOutput.ReadToEnd();
+
+            p.WaitForExit();
+
         }
     }
 }

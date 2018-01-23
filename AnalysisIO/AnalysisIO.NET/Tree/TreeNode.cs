@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace AnalysisIO.NET.Tree
 {
@@ -10,7 +11,8 @@ namespace AnalysisIO.NET.Tree
     {
         public List<TreeNode> Children { get; }
         public string Identifier { get; set; }
-        public object OldNode { get; set; }
+        [JsonIgnore]
+        public object OldNode { get; set; }//transient
 
         public TreeNode()
         {

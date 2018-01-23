@@ -29,8 +29,6 @@
             <header id="header">
                 <!-- navigation section  -->
                 <div class="header-content clearfix">
-                    <a class="logo" href="#">
-                        <img src="images/logo.png" alt="Mafolio"/></a>
                     <nav class="navigation" role="navigation">
                         <ul class="primary-nav">
                             <li><a href="#">>Dead Link</a></li>
@@ -47,10 +45,10 @@
             <div class="container">
                 <div class="col-md-10 col-md-offset-1">
                     <div class="banner-text text-center">
-                        <h1>Hey, I’m John</h1>
+                        <h1>Analysis.IO</h1>
                         <p>
-                            Looking for a strategist and experienced designer,<br/>
-                            Scroll to see my work.
+                            Analyze the dependencies of open source git C# projects.<br/>
+                            Scroll down to try it out.
                         </p>
                         <!-- banner text -->
                     </div>
