@@ -1,17 +1,12 @@
 ﻿using Octokit;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
-using AnalysisIO.Tree;
 using AnalysisIO.Visitor;
-using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Resolver;
-using ICSharpCode.NRefactory.Semantics;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using Resolver;
@@ -20,8 +15,8 @@ namespace AnalysisIO.SourceImporter
 {
     public class SourceImporter
     {
-        private static string PATH = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/analysisIO/";
-        private static string TREE_FILE_NAME = "tree.json";
+        private static readonly string DefaultPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/analysisIO/";
+        private const string TreeFileName = "tree.json";
         public static Tree.Tree Tree;
 
 
@@ -33,9 +28,9 @@ namespace AnalysisIO.SourceImporter
         /// <returns></returns>
         public async Task<Dictionary<string, string>> ImportSource(string repo, string project)
         {
-            var client = new GitHubClient(new ProductHeaderValue(repo));
-            var releases = await client.Repository.Release.GetAll(repo, project);
-            return ImportReleases(repo,project,releases.ToList());
+            GitHubClient client = new GitHubClient(new ProductHeaderValue(repo));
+            IReadOnlyList<Release> releases = await client.Repository.Release.GetAll(repo, project);
+            return ImportReleases(repo, project, releases.ToList());
         }
 
         /// <summary>
@@ -47,9 +42,9 @@ namespace AnalysisIO.SourceImporter
         /// <returns></returns>
         public async Task<Dictionary<string, string>> ImportSource(string repo, string project, string release1)
         {
-            var client = new GitHubClient(new ProductHeaderValue(repo));
-            var releases = await client.Repository.Release.GetAll(repo, project);
-            return ImportReleases(repo,project,releases.Where(r => r.TagName == release1).ToList());
+            GitHubClient client = new GitHubClient(new ProductHeaderValue(repo));
+            IReadOnlyList<Release> releases = await client.Repository.Release.GetAll(repo, project);
+            return ImportReleases(repo, project, releases.Where(r => r.TagName == release1).ToList());
         }
 
         /// <summary>
@@ -61,75 +56,101 @@ namespace AnalysisIO.SourceImporter
         /// <returns></returns>
         public async Task<Dictionary<string, string>> ImportSource(string repo, string project, string release1, string release2)
         {
-            var client = new GitHubClient(new ProductHeaderValue(repo));
-            var releases = await client.Repository.Release.GetAll(repo, project);
-            return ImportReleases(repo,project,releases.Where(r => r.TagName == release1 || r.TagName == release2).ToList());
+            GitHubClient client = new GitHubClient(new ProductHeaderValue(repo));
+            IReadOnlyList<Release> releases = await client.Repository.Release.GetAll(repo, project);
+            return ImportReleases(repo, project, releases.Where(r => r.TagName == release1 || r.TagName == release2).ToList());
         }
 
         public Dictionary<string, string> ImportReleases(string repo, string project, List<Release> releases)
         {
+
+            if (releases.Count == 0)
+            {
+                throw new Exception("No releases found or release name is invalid for this project");
+            }
+
             //dict of version and its serialized tree
             Dictionary<string, string> versionTrees = new Dictionary<string, string>();
 
             FastZip entry = new FastZip();
-
-            foreach (var r in releases)
+            foreach (Release release in releases)
             {
-                string releaseDir = $"{PATH}/{repo}/{project}/{r.TagName}";
+                string releaseDirectory = $"{DefaultPath}/{repo}/{project}/{release.TagName}";
 
                 //reset tree
                 Tree = new Tree.Tree();
 
-                try
+                WebClient webClient = new WebClient();
+                webClient.Headers.Add("User-Agent", repo);
+
+
+                if (!Directory.Exists(releaseDirectory))
                 {
-                    WebClient webClient = new WebClient();
-                    webClient.Headers.Add("User-Agent", repo);
-
-
-                    if (!Directory.Exists(releaseDir))
+                    Directory.CreateDirectory(releaseDirectory);
+                }
+                //fetch archive and extract it
+                string releaseZipFilePath = releaseDirectory + "/archive.zip";
+                if (!File.Exists(releaseZipFilePath))
+                {
+                    webClient.DownloadFile(new Uri(release.ZipballUrl.Replace("https://", "http://")), releaseZipFilePath);
+                }
+                if (Directory.GetDirectories(releaseDirectory).Length == 0) //the archive extracts in its own folder. If a folder is created already the zip was extracted
+                {
+                    try
                     {
-                        Directory.CreateDirectory(releaseDir);
+                        entry.ExtractZip(releaseZipFilePath, releaseDirectory, null);
                     }
-                    //fetch archive and extract it
-                    string releaseZipFilePath = releaseDir + "/archive.zip";
-                    if (!File.Exists(releaseZipFilePath))
+                    catch (PathTooLongException)
                     {
-                        webClient.DownloadFile(new Uri(r.ZipballUrl.Replace("https://", "http://")), releaseZipFilePath);
-                    }
-                    if (Directory.GetDirectories(releaseDir).Length == 0) //the archive extracts in its own folder. If a folder is created already the zip was extracted (TODO user folders)
-                    {
-                        entry.ExtractZip(releaseZipFilePath, releaseDir, null);
+                        DeleteDirectory(releaseDirectory, true);
+                        throw;
                     }
                 }
-                catch (WebException e)
-                {
-                    var xx = 5;
-                }
-
-                versionTrees.Add(r.TagName, GetTreeJson(releaseDir));
+                versionTrees.Add(release.TagName, GetTreeJson(releaseDirectory));
 
             }
 
             return versionTrees;
         }
 
-        /// <summary>
-        /// Looks for a tree json in @releaseDir and returns it, or builds the tree and serializes it.
-        /// </summary>
-        /// <param name="releaseDir"></param>
-        /// <returns></returns>
-        private string GetTreeJson(string releaseDir)
+        public static void DeleteDirectory(string targetDirectory, bool keepArchive)
         {
-            string treePath = releaseDir + "/" + TREE_FILE_NAME;
-            string jsonTree = "{}";
+            string[] files = keepArchive ? new string[0] : Directory.GetFiles(targetDirectory);
+            string[] directories = Directory.GetDirectories(targetDirectory);
+
+            foreach (string file in files)
+            {
+                File.SetAttributes(file, FileAttributes.Normal);
+                File.Delete(file);
+            }
+
+            foreach (string directory in directories)
+            {
+                DeleteDirectory(directory, false);
+            }
+
+            if(!keepArchive)
+            {
+                Directory.Delete(targetDirectory, false);
+            }
+        }
+
+        /// <summary>
+        /// Looks for a tree json in @releaseDirectory and returns it, or builds the tree and serializes it.
+        /// </summary>
+        /// <param name="releaseDirectory"></param>
+        /// <returns></returns>
+        private string GetTreeJson(string releaseDirectory)
+        {
+            string treePath = releaseDirectory + "/" + TreeFileName;
+            string jsonTree;
             if (File.Exists(treePath)) //tree was generated earlier already
             {
                 jsonTree = File.ReadAllText(treePath);
-                Tree = JsonConvert.DeserializeObject<Tree.Tree>(jsonTree);//TODO not needed?
             }
             else
             {
-                string solutionFilePath = Directory.GetFiles(releaseDir, "*.sln", SearchOption.AllDirectories).First();
+                string solutionFilePath = Directory.GetFiles(releaseDirectory, "*.sln", SearchOption.AllDirectories).First();
                 Tree.Identifier = solutionFilePath;
                 Solution solution = new Solution(solutionFilePath);
 
@@ -137,7 +158,7 @@ namespace AnalysisIO.SourceImporter
 
                 //generate json and save it
                 jsonTree = JsonConvert.SerializeObject(Tree);
-                SaveTree(jsonTree, releaseDir);
+                SaveTree(jsonTree, releaseDirectory);
             }
             return jsonTree;
         }
@@ -149,14 +170,14 @@ namespace AnalysisIO.SourceImporter
         private void BuildTree(Solution solution)
         {
             //generate namespace nodes of the tree
-            foreach (var file in solution.AllFiles)
+            foreach (CSharpFile file in solution.AllFiles)
             {
                 CSharpAstResolver astResolver = new CSharpAstResolver(file.Project.Compilation, file.SyntaxTree, file.UnresolvedTypeSystemForFile);
                 file.SyntaxTree.AcceptVisitor(new NamespaceVisitor(), astResolver);
             }
 
             //generate class nodes (leaves) of the tree
-            foreach (var file in solution.AllFiles)
+            foreach (CSharpFile file in solution.AllFiles)
             {
                 CSharpAstResolver astResolver = new CSharpAstResolver(file.Project.Compilation, file.SyntaxTree, file.UnresolvedTypeSystemForFile);
                 file.SyntaxTree.AcceptVisitor(new DependencyVisitor(), astResolver);
@@ -167,10 +188,10 @@ namespace AnalysisIO.SourceImporter
         /// Save the tree to a file for later reuse.
         /// </summary>
         /// <param name="tree"></param>
-        /// <param name="dir"></param>
-        private void SaveTree(string tree, string dir)
+        /// <param name="directory"></param>
+        private void SaveTree(string tree, string directory)
         {
-            string treeFilePath = dir + "/" + TREE_FILE_NAME;
+            string treeFilePath = directory + "/" + TreeFileName;
             if (!File.Exists(treeFilePath))
             {
                 File.Create(treeFilePath).Close();
