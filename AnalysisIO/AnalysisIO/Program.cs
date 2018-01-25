@@ -20,7 +20,7 @@ namespace AnalysisIO
             {
                 //Console.Out.Write("ERROR: Provide at a repository and a project.");TODO enable this
                 //return;
-                args = new string[] { "rationally", "rationally_visio", "0.1.5" };
+                args = new string[] { "rationally", "rationally_visio", "0.1.1" };
             }
             string repo = args[0];
             string project = args[1];
