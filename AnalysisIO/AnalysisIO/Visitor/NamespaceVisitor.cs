@@ -19,8 +19,7 @@ namespace AnalysisIO.Visitor
             NamespaceResolveResult resolvedNamespace = astResolver.Resolve(namespaceDeclaration) as NamespaceResolveResult;
 
             //create a node for the namespace in the tree
-            NamespaceNode node = new NamespaceNode();
-            node.Identifier = resolvedNamespace.NamespaceName;
+            NamespaceNode node = new NamespaceNode {Identifier = resolvedNamespace.NamespaceName};
             SourceImporter.SourceImporter.Tree.AddChild(node);
 
             return base.VisitNamespaceDeclaration(namespaceDeclaration, astResolver);

@@ -14,10 +14,10 @@ namespace AnalysisIO.Visitor
     {
         public override object VisitInvocationExpression(InvocationExpression invocationExpression, CSharpAstResolver astResolver)
         {
-            var rr = astResolver.Resolve(invocationExpression) as InvocationResolveResult;
+            InvocationResolveResult rr = astResolver.Resolve(invocationExpression) as InvocationResolveResult;
             if (rr != null)
             {
-                var target = rr.TargetResult;
+                ResolveResult target = rr.TargetResult;
 
                 Tree.Tree t = SourceImporter.SourceImporter.Tree;
 
@@ -31,7 +31,7 @@ namespace AnalysisIO.Visitor
                     //find out class in which the invocation statement is found
                     TypeDeclaration classDeclaration = invocationExpression.Ancestors.Where(a => a is TypeDeclaration).Cast<TypeDeclaration>().First();
                     //resolve the class declaration
-                    var resolvedClass = astResolver.Resolve(classDeclaration) as TypeResolveResult;
+                    TypeResolveResult resolvedClass = astResolver.Resolve(classDeclaration) as TypeResolveResult;
                     ClassNode callerNode = new ClassNode(resolvedClass.Type.FullName, resolvedClass);
                     callerNode = t.AddOrGetClassNode(resolvedClass.Type.Namespace, callerNode); //override if already in tree with that node
 
@@ -40,6 +40,90 @@ namespace AnalysisIO.Visitor
                 }
             }
             return base.VisitInvocationExpression(invocationExpression, astResolver);
+        }
+
+        public override object VisitFieldDeclaration(FieldDeclaration fieldDeclaration, CSharpAstResolver astResolver)
+        {
+           ResolveResult resolveResult = astResolver.Resolve(fieldDeclaration.ReturnType);
+           if (resolveResult != null)
+           {
+                Tree.Tree t = SourceImporter.SourceImporter.Tree;
+
+                //1) target node
+                ClassNode targetNode = new ClassNode(resolveResult.Type.FullName, resolveResult);
+                targetNode = t.AddOrGetClassNode(resolveResult.Type.Namespace, targetNode);//override if already in tree with that node
+
+                if (targetNode != null)
+                {
+                    //2) caller node (can't be null)
+                    //find out class in which the invocation statement is found
+                    TypeDeclaration classDeclaration = fieldDeclaration.Ancestors.Where(a => a is TypeDeclaration).Cast<TypeDeclaration>().First();
+                    //resolve the class declaration
+                    TypeResolveResult resolvedClass = astResolver.Resolve(classDeclaration) as TypeResolveResult;
+                    ClassNode callerNode = new ClassNode(resolvedClass.Type.FullName, resolvedClass);
+                    callerNode = t.AddOrGetClassNode(resolvedClass.Type.Namespace, callerNode); //override if already in tree with that node
+
+                    //3) edge (dependency) between caller and target
+                    callerNode.AddDependency(targetNode);
+                }
+            }
+            return base.VisitFieldDeclaration(fieldDeclaration, astResolver);
+        }
+        public override object VisitPropertyDeclaration(PropertyDeclaration propertyDeclaration, CSharpAstResolver astResolver)
+        {
+            ResolveResult resolveResult = astResolver.Resolve(propertyDeclaration.ReturnType);
+            if (resolveResult != null)
+            {
+                Tree.Tree t = SourceImporter.SourceImporter.Tree;
+
+                //1) target node
+                ClassNode targetNode = new ClassNode(resolveResult.Type.FullName, resolveResult);
+                targetNode = t.AddOrGetClassNode(resolveResult.Type.Namespace, targetNode);//override if already in tree with that node
+
+                if (targetNode != null)
+                {
+                    //2) caller node (can't be null)
+                    //find out class in which the invocation statement is found
+                    TypeDeclaration classDeclaration = propertyDeclaration.Ancestors.Where(a => a is TypeDeclaration).Cast<TypeDeclaration>().First();
+                    //resolve the class declaration
+                    TypeResolveResult resolvedClass = astResolver.Resolve(classDeclaration) as TypeResolveResult;
+                    ClassNode callerNode = new ClassNode(resolvedClass.Type.FullName, resolvedClass);
+                    callerNode = t.AddOrGetClassNode(resolvedClass.Type.Namespace, callerNode); //override if already in tree with that node
+
+                    //3) edge (dependency) between caller and target
+                    callerNode.AddDependency(targetNode);
+                }
+            }
+            return base.VisitPropertyDeclaration(propertyDeclaration, astResolver);
+        }
+
+        public override object VisitTypeDeclaration(TypeDeclaration typeDeclaration, CSharpAstResolver astResolver)
+        {
+            foreach (AstType baseType in typeDeclaration.BaseTypes)
+            {
+                ResolveResult resolveResult = astResolver.Resolve(baseType);
+                if (resolveResult != null)
+                {
+                    Tree.Tree t = SourceImporter.SourceImporter.Tree;
+
+                    //1) target node
+                    ClassNode targetNode = new ClassNode(resolveResult.Type.FullName, resolveResult);
+                    targetNode = t.AddOrGetClassNode(resolveResult.Type.Namespace, targetNode);//override if already in tree with that node
+
+                    if (targetNode != null)
+                    {
+                        //resolve the class declaration
+                        TypeResolveResult resolvedClass = astResolver.Resolve(typeDeclaration) as TypeResolveResult;
+                        ClassNode callerNode = new ClassNode(resolvedClass.Type.FullName, resolvedClass);
+                        callerNode = t.AddOrGetClassNode(resolvedClass.Type.Namespace, callerNode); //override if already in tree with that node
+
+                        //3) edge (dependency) between caller and target
+                        callerNode.AddDependency(targetNode);
+                    }
+                }
+            }
+
+            return base.VisitTypeDeclaration(typeDeclaration, astResolver);
         }
     }
 }
