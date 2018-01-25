@@ -23,7 +23,9 @@
     <script src="js/retina.min.js"></script>
     <script src="js/modernizr.js"></script>
     <script src="js/main.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="js/Default.js"></script>
+    <script src="js/DependencyRenderer.js"></script>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -115,6 +117,17 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+        
+        <div id="dependencyBarrier"></div>
+
+        <!-- DEPENDENCIES -->
+        <section id="dependencySection" class="section">
+            <div class="container">
+                <div id="dependencyArea">
+                    
                 </div>
             </div>
         </section>

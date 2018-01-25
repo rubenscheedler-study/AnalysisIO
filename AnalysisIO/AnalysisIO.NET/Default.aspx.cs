@@ -61,6 +61,26 @@ namespace AnalysisIO.NET
         {
             GitWrapper project =  GitWrapper.For(repo, projectName);
             return project.Releases.ToList();
-        }  
+        }
+
+        [WebMethod]
+        [ScriptMethod]
+        public static string Dependencies(string repo, string projectName, string tagName)
+        {
+            using (Process p = new Process())
+            {
+                // Redirect the output stream of the child process.
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.StartInfo.FileName = "C:/Users/Ruben/Source/Repos/AnalysisIO/AnalysisIO/AnalysisIO/bin/Debug/AnalysisIO_Console.exe";
+                p.StartInfo.Arguments = $"{repo} {projectName} {tagName}";
+                p.Start();
+
+                string s =  p.StandardOutput.ReadToEnd();
+                return s;
+            }
+                
+        }
+
     }
 }

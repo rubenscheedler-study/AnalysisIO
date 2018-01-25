@@ -18,6 +18,9 @@ function submitReleasesClicked(e) {
     var tag1 = $("#releaseDropdown1").val();
     var tag2 = $("#releaseDropdown2").val();
 
+    if (tag1 && tag2) {
+        getDependencyComparison(tag1, tag2);
+    }
     if (tag1 && !tag2) {
         renderDependencies(tag1);
         return;
@@ -25,12 +28,25 @@ function submitReleasesClicked(e) {
     if (!tag1 && tag2) {
         renderDependencies(tag2);
         return;
-    } 
+    }
+    
 }
 
 function renderDependencies(tag) {
     GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag).done(function(response, status, xhr) {
 
+    });
+}
+
+function getDependencyComparison(tag1, tag2) {
+    var oldJson = "{}";
+    var newJson = "{}";
+    GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag1).done(function (response, status, xhr) {
+        oldJson = JSON.parse(response.d)[tag1];
+        GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag2).done(function (response, status, xhr) {
+            newJson = JSON.parse(response.d)[tag2];
+            renderDependencyComparison(oldJson, newJson);
+        });
     });
 }
 

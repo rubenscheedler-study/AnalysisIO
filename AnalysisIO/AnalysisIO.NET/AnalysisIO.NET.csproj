@@ -143,6 +143,7 @@
     <Content Include="css\style.css" />
     <Content Include="images\project_icon.png" />
     <Content Include="js\Default.js" />
+    <Content Include="js\DependencyRenderer.js" />
     <Content Include="packages.config" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
