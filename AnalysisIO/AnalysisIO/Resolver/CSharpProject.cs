@@ -23,6 +23,8 @@ using System.Linq;
 
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
+using Microsoft.Build.Evaluation;
+using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Logging;
 
@@ -73,75 +75,61 @@ namespace Resolver
 			// Normalize the file name
 			fileName = Path.GetFullPath(fileName);
 			
-			this.Solution = solution;
-			this.Title = title;
-			this.FileName = fileName;
+			Solution = solution;
+			Title = title;
+			FileName = fileName;
 			
 			// Use MSBuild to open the .csproj
-			var msbuildProject = new Microsoft.Build.Evaluation.Project(fileName);
+			Project msbuildProject = new Project(fileName);
 			// Figure out some compiler settings
-			this.AssemblyName = msbuildProject.GetPropertyValue("AssemblyName");
-			this.CompilerSettings.AllowUnsafeBlocks = GetBoolProperty(msbuildProject, "AllowUnsafeBlocks") ?? false;
-			this.CompilerSettings.CheckForOverflow = GetBoolProperty(msbuildProject, "CheckForOverflowUnderflow") ?? false;
+			AssemblyName = msbuildProject.GetPropertyValue("AssemblyName");
+			CompilerSettings.AllowUnsafeBlocks = GetBoolProperty(msbuildProject, "AllowUnsafeBlocks") ?? false;
+			CompilerSettings.CheckForOverflow = GetBoolProperty(msbuildProject, "CheckForOverflowUnderflow") ?? false;
 			string defineConstants = msbuildProject.GetPropertyValue("DefineConstants");
 			foreach (string symbol in defineConstants.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
-				this.CompilerSettings.ConditionalSymbols.Add(symbol.Trim());
+				CompilerSettings.ConditionalSymbols.Add(symbol.Trim());
 			
 			// Initialize the unresolved type system
 			IProjectContent pc = new CSharpProjectContent();
-			pc = pc.SetAssemblyName(this.AssemblyName);
+			pc = pc.SetAssemblyName(AssemblyName);
 			pc = pc.SetProjectFileName(fileName);
-			pc = pc.SetCompilerSettings(this.CompilerSettings);
+			pc = pc.SetCompilerSettings(CompilerSettings);
 			// Parse the C# code files
-			foreach (var item in msbuildProject.GetItems("Compile")) {
-				var file = new CSharpFile(this, Path.Combine(msbuildProject.DirectoryPath, item.EvaluatedInclude));
-				Files.Add(file);
+			foreach (CSharpFile file in msbuildProject.GetItems("Compile").Select(item => new CSharpFile(this, Path.Combine(msbuildProject.DirectoryPath, item.EvaluatedInclude))))
+			{
+			    Files.Add(file);
 			}
 			// Add parsed files to the type system
 			pc = pc.AddOrUpdateFiles(Files.Select(f => f.UnresolvedTypeSystemForFile));
 			
 			// Add referenced assemblies:
-			foreach (string assemblyFile in ResolveAssemblyReferences(msbuildProject)) {
-				IUnresolvedAssembly assembly = solution.LoadAssembly(assemblyFile);
-				pc = pc.AddAssemblyReferences(new [] { assembly });
-			}
-			
-			// Add project references:
-			foreach (var item in msbuildProject.GetItems("ProjectReference")) {
-				string referencedFileName = Path.Combine(msbuildProject.DirectoryPath, item.EvaluatedInclude);
-				// Normalize the path; this is required to match the name with the referenced project's file name
-				referencedFileName = Path.GetFullPath(referencedFileName);
-				pc = pc.AddAssemblyReferences(new[] { new ProjectReference(referencedFileName) });
-			}
-			this.ProjectContent = pc;
+		    pc = ResolveAssemblyReferences(msbuildProject).Select(solution.LoadAssembly).Aggregate(pc, (current, assembly) => current.AddAssemblyReferences(assembly));
+
+		    // Add project references:
+		    pc = msbuildProject.GetItems("ProjectReference").Select(item => Path.Combine(msbuildProject.DirectoryPath, item.EvaluatedInclude)).Select(Path.GetFullPath).Aggregate(pc, (current, referencedFileName) => current.AddAssemblyReferences(new ProjectReference(referencedFileName)));
+            ProjectContent = pc;
 		}
 		
-		IEnumerable<string> ResolveAssemblyReferences(Microsoft.Build.Evaluation.Project project)
+		IEnumerable<string> ResolveAssemblyReferences(Project project)
 		{
 			// Use MSBuild to figure out the full path of the referenced assemblies
-			var projectInstance = project.CreateProjectInstance();
+			ProjectInstance projectInstance = project.CreateProjectInstance();
 			projectInstance.SetProperty("BuildingProject", "false");
 			project.SetProperty("DesignTimeBuild", "true");
 			
 			projectInstance.Build("ResolveAssemblyReferences", new [] { new ConsoleLogger(LoggerVerbosity.Minimal) });
-			var items = projectInstance.GetItems("_ResolveAssemblyReferenceResolvedFiles");
-			string baseDirectory = Path.GetDirectoryName(this.FileName);
+			ICollection<ProjectItemInstance> items = projectInstance.GetItems("_ResolveAssemblyReferenceResolvedFiles");
+			string baseDirectory = Path.GetDirectoryName(FileName);
 			return items.Select(i => Path.Combine(baseDirectory, i.GetMetadataValue("Identity")));
 		}
 		
-		static bool? GetBoolProperty(Microsoft.Build.Evaluation.Project p, string propertyName)
+		static bool? GetBoolProperty(Project p, string propertyName)
 		{
 			string val = p.GetPropertyValue(propertyName);
 			bool result;
-			if (bool.TryParse(val, out result))
-				return result;
-			else
-				return null;
+		    return bool.TryParse(val, out result) ? (bool?) result : null;
 		}
 		
-		public override string ToString()
-		{
-			return string.Format("[CSharpProject AssemblyName={0}]", AssemblyName);
-		}
+		public override string ToString() => $"[CSharpProject AssemblyName={AssemblyName}]";
 	}
 }
