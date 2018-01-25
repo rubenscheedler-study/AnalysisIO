@@ -5,22 +5,25 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title>AnalysisIO</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="css/jquery.fancybox.css"/>
-    <link rel="stylesheet" href="css/main.css"/>
-    <link rel="stylesheet" href="css/responsive.css"/>
-    <link rel="stylesheet" href="css/animate.min.css"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
-    <script type="text/javascript" src="js/D3.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/jquery.fancybox.css" />
+    <link rel="stylesheet" href="css/main.css" />
     
+    <link rel="stylesheet" href="css/responsive.css" />
+    <link rel="stylesheet" href="css/animate.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />-->
+    <script type="text/javascript" src="js/D3.min.js"></script>
+
     <!-- JS FILES -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/jquery.fancybox.pack.js"></script>
-        <script src="js/jquery.waypoints.min.js"></script>
-        <script src="js/retina.min.js"></script>
-        <script src="js/modernizr.js"></script>
-        <script src="js/main.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.fancybox.pack.js"></script>
+    <script src="js/jquery.waypoints.min.js"></script>
+    <script src="js/retina.min.js"></script>
+    <script src="js/modernizr.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/Default.js"></script>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -31,9 +34,8 @@
                 <div class="header-content clearfix">
                     <nav class="navigation" role="navigation">
                         <ul class="primary-nav">
-                            <li><a href="#">>Dead Link</a></li>
-                            <li><a href="#">Dead Link</a></li>
-                            <li><a href="#">Dead Link</a></li>
+                            <li><a href="#projectPicker">Start analyzing</a></li>
+                            <li><a href="#works">Examples</a></li>
                         </ul>
                     </nav>
                     <a href="#" class="nav-toggle">Menu<span></span></a>
@@ -47,7 +49,7 @@
                     <div class="banner-text text-center">
                         <h1>Analysis.IO</h1>
                         <p>
-                            Analyze the dependencies of open source git C# projects.<br/>
+                            Analyze the dependencies of open source git C# projects.<br />
                             Scroll down to try it out.
                         </p>
                         <!-- banner text -->
@@ -55,35 +57,91 @@
                 </div>
             </div>
         </section>
-        <!-- header section -->
-        <!-- description text section -->
-        <section id="descripton" class="section descripton">
+
+        <!-- REPO + PROJECT -->
+        <section id="projectPicker" class="section">
             <div class="container">
-                <div class="col-md-10 col-md-offset-1 text-center">
-                    <div id="uxJson" runat="server"></div>     
+                <div class="row">
+                    <div class="form-group col-sm-4">
+                        <label for="repoInput">Repository</label>
+                        <input type="text" class="form-control" id="repoInput" aria-describedby="repoHelp" placeholder="Rationally" />
+                        <small id="repoHelp" class="form-text text-muted">Enter the name of a repository or leave empty for an example.</small>
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <label for="projectInput">Project</label>
+                        <input type="text" class="form-control" id="projectInput" aria-describedby="projectHelp" placeholder="Rationally_visio" />
+                        <small id="projectHelp" class="form-text text-muted">Enter one of the C# projects in the choosen repository or leave empty for an example.</small>
+                    </div>
+                    <div class="col-sm-4">
+                        <button class="btn btn-large with-top-margin" id="submitProject" title="The next step will be to select releases to compare.">Find Releases</button>
+                    </div>
+                </div>
+                <!--<div class="col-sm">
+                    <button id="submitProject">Visualize Dependencies</button>
+                </div>-->
+
+            </div>
+        </section>
+        
+        <div id="releasePickBarrier"></div>
+        
+        <!-- RELEASE -->
+        <section id="releasePicker" class="section">
+            <div class="container">
+                <div class="row">
+                    <div class="form-group col-sm-4">
+                        <label for="releaseDropdown1">Release #1</label>
+                        <select class="form-control" id="releaseDropdown1" aria-describedby="releaseHelp1">
+                            <option value="default">Pick a release...</option>
+                        </select>
+                        <small id="releaseHelp1" class="form-text text-muted">Pick one of the releases.</small>
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <label for="releaseDropdown2">Release #2</label>
+                        <select class="form-control" id="releaseDropdown2" aria-describedby="releaseHelp2">
+                            <option value="default">Pick a release...</option>
+                        </select>
+                        <small id="releaseHelp2" class="form-text text-muted">Pick one of the releases.</small>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-large with-top-margin" id="submitReleases">Visualize Dependencies</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-large with-top-margin" id="DownloadReleases">Download All Releases (TODO)</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
+
+        <div class="col-md-10 col-md-offset-1 text-center">
+            <div id="uxJson" runat="server"></div>
+        </div>
         <!-- description text section -->
         <!-- portfolio section -->
         <section id="works" class="works section no-padding">
             <div class="container-fluid">
                 <div class="row no-gutter">
                     <div class="col-lg-3 col-md-6 col-sm-6 work">
-                        <a href="images/work-1.jpg" class="work-box">
-                            <img src="images/work-1.jpg" alt=""/>
+                        <a href="images/project_icon.png" class="work-box" data-repo="Rationally" data-project="Rationally_Visio">
+                            <img src="images/project_icon.png" alt="" />
                             <div class="overlay">
                                 <div class="overlay-caption">
-                                    <h5>Project Name</h5>
-                                    <p>Logo Design</p>
+                                    <h5>Rationally</h5>
+                                    <p>Design Documentation Application</p>
                                 </div>
                             </div>
                             <!-- overlay -->
                         </a>
                     </div>
                     <div class="col-lg-3 col-md-6 col-sm-6 work">
-                        <a href="images/work-2.jpg" class="work-box">
-                            <img src="images/work-2.jpg" alt=""/>
+                        <a href="images/project_icon.png" class="work-box">
+                            <img src="images/project_icon.png" alt="" />
                             <div class="overlay">
                                 <div class="overlay-caption">
                                     <h5>Project Name</h5>
@@ -95,7 +153,7 @@
                     </div>
                     <div class="col-lg-3 col-md-6 col-sm-6 work">
                         <a href="images/work-3.jpg" class="work-box">
-                            <img src="images/work-3.jpg" alt=""/>
+                            <img src="images/project_icon.png" alt="" />
                             <div class="overlay">
                                 <div class="overlay-caption">
                                     <h5>Project Name</h5>
@@ -107,7 +165,7 @@
                     </div>
                     <div class="col-lg-3 col-md-6 col-sm-6 work">
                         <a href="images/work-4.jpg" class="work-box">
-                            <img src="images/work-4.jpg" alt=""/>
+                            <img src="images/project_icon.png" alt="" />
                             <div class="overlay">
                                 <div class="overlay-caption">
                                     <h5>Project Name</h5>
@@ -117,87 +175,19 @@
                             <!-- overlay -->
                         </a>
                     </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6 work">
-                        <a href="images/work-5.jpg" class="work-box">
-                            <img src="images/work-5.jpg" alt=""/>
-                            <div class="overlay">
-                                <div class="overlay-caption">
-                                    <h5>Project Name</h5>
-                                    <p>Website Design</p>
-                                </div>
-                            </div>
-                            <!-- overlay -->
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6 work">
-                        <a href="images/work-6.jpg" class="work-box">
-                            <img src="images/work-6.jpg" alt=""/>
-                            <div class="overlay">
-                                <div class="overlay-caption">
-                                    <h5>Project Name</h5>
-                                    <p>Logo Design</p>
-                                </div>
-                            </div>
-                            <!-- overlay -->
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6 work">
-                        <a href="images/work-7.jpg" class="work-box">
-                            <img src="images/work-7.jpg" alt=""/>
-                            <div class="overlay">
-                                <div class="overlay-caption">
-                                    <h5>Project Name</h5>
-                                    <p>Branding</p>
-                                </div>
-                            </div>
-                            <!-- overlay -->
-                        </a>
-                    </div>
-                    <div class="col-lg-3 col-md-6 col-sm-6 work">
-                        <a href="images/work-8.jpg" class="work-box">
-                            <img src="images/work-8.jpg" alt=""/>
-                            <div class="overlay">
-                                <div class="overlay-caption">
-                                    <h5>Project Name</h5>
-                                    <p>Website Design</p>
-                                </div>
-                            </div>
-                            <!-- overlay -->
-                        </a>
-                    </div>
+                    
                 </div>
             </div>
         </section>
         <!-- portfolio section -->
-        <!-- hire me section -->
-        <section id="hireme" class="section hireme">
-            <div class="container">
-                <div class="col-md-8 col-md-offset-2 text-center">
-                    <h3>Need something specific?</h3>
-                    <p>We are currently crafting new products but would love to hear from you.</p>
-                    <a href="contact.html" class="btn btn-large">Hire me</a>
-                </div>
-            </div>
-        </section>
-        <!-- hire me section -->
+
         <!-- footer -->
         <footer class="section footer">
             <div class="footer-bottom">
                 <div class="container">
                     <div class="col-md-12">
                         <p>
-                            <ul class="footer-share">
-                                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                                <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-                                <li><a href="#"><i class="fa fa-pinterest-p"></i></a></li>
-                                <li><a href="#"><i class="fa fa-vimeo"></i></a></li>
-                            </ul>
-                        </p>
-                        <p>
-                            © 2015 All rights reserved. All Rights Reserved<br>
-                            Made with <i class="fa fa-heart pulse"></i>by <a href="http://www.designstub.com/">Designstub</a>
+                            © 2017 Ronald Kruizinga and Ruben Scheedler
                         </p>
                     </div>
                 </div>
@@ -205,7 +195,7 @@
         </footer>
         <!-- footer -->
 
-        
+
     </form>
 </body>
 </html>

@@ -5,14 +5,17 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Script.Services;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using Octokit;
-
+using AnalysisIO.NET.Git;
 namespace AnalysisIO.NET
 {
+    [WebService]
     public partial class Default : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
@@ -44,15 +47,20 @@ namespace AnalysisIO.NET
             p.StartInfo.RedirectStandardOutput = true;
             p.StartInfo.FileName = "C:/Users/Ruben/Source/Repos/AnalysisIO/AnalysisIO/AnalysisIO/bin/Debug/AnalysisIO_Console.exe";
             p.StartInfo.Arguments = "PowerShell PowerShell 6.0.0";
-            p.Start();
-            // Do not wait for the child process to exit before
-            // reading to the end of its redirected stream.
-            // p.WaitForExit();
-            // Read the output stream first and then wait.
-            uxJson.InnerHtml = p.StandardOutput.ReadToEnd();
+            //p.Start();
 
-            p.WaitForExit();
+            //uxJson.InnerHtml = p.StandardOutput.ReadToEnd();
+
+            //p.WaitForExit();
 
         }
+
+        [WebMethod]
+        [ScriptMethod]
+        public static List<Release> Releases(string repo, string projectName)
+        {
+            GitWrapper project =  GitWrapper.For(repo, projectName);
+            return project.Releases.ToList();
+        }  
     }
 }
