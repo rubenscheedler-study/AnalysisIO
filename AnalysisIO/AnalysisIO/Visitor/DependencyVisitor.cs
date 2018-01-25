@@ -39,6 +39,32 @@ namespace AnalysisIO.Visitor
                     callerNode.AddDependency(targetNode);
                 }
             }
+            foreach (Expression invocationExpressionArgument in invocationExpression.Arguments)
+            {
+                ResolveResult resolveResult = astResolver.Resolve(invocationExpressionArgument);
+                if (resolveResult != null)
+                {
+                    Tree.Tree t = SourceImporter.SourceImporter.Tree;
+
+                    //1) target node
+                    ClassNode targetNode = new ClassNode(resolveResult.Type.FullName, resolveResult);
+                    targetNode = t.AddOrGetClassNode(resolveResult.Type.Namespace, targetNode); //override if already in tree with that node
+
+                    if (targetNode != null)
+                    {
+                        //2) caller node (can't be null)
+                        //find out class in which the invocation statement is found
+                        TypeDeclaration classDeclaration = invocationExpression.Ancestors.Where(a => a is TypeDeclaration).Cast<TypeDeclaration>().First();
+                        //resolve the class declaration
+                        TypeResolveResult resolvedClass = astResolver.Resolve(classDeclaration) as TypeResolveResult;
+                        ClassNode callerNode = new ClassNode(resolvedClass.Type.FullName, resolvedClass);
+                        callerNode = t.AddOrGetClassNode(resolvedClass.Type.Namespace, callerNode); //override if already in tree with that node
+
+                        //3) edge (dependency) between caller and target
+                        callerNode.AddDependency(targetNode);
+                    }
+                }
+            }
             return base.VisitInvocationExpression(invocationExpression, astResolver);
         }
 
@@ -69,6 +95,7 @@ namespace AnalysisIO.Visitor
             }
             return base.VisitFieldDeclaration(fieldDeclaration, astResolver);
         }
+
         public override object VisitPropertyDeclaration(PropertyDeclaration propertyDeclaration, CSharpAstResolver astResolver)
         {
             ResolveResult resolveResult = astResolver.Resolve(propertyDeclaration.ReturnType);
@@ -265,7 +292,7 @@ namespace AnalysisIO.Visitor
             }
             return base.VisitObjectCreateExpression(objectCreateExpression, astResolver);
         }
-
+ 
         public override object VisitVariableDeclarationStatement(VariableDeclarationStatement variableDeclarationStatement, CSharpAstResolver astResolver)
         {
             ResolveResult resolveResult = astResolver.Resolve(variableDeclarationStatement.Type);
@@ -293,6 +320,7 @@ namespace AnalysisIO.Visitor
             }
             return base.VisitVariableDeclarationStatement(variableDeclarationStatement, astResolver);
         }
+
         public override object VisitMemberReferenceExpression(MemberReferenceExpression memberReferenceExpression, CSharpAstResolver astResolver)
         {
             ResolveResult resolveResult = astResolver.Resolve(memberReferenceExpression.Target);
@@ -320,6 +348,7 @@ namespace AnalysisIO.Visitor
             }
             return base.VisitMemberReferenceExpression(memberReferenceExpression, astResolver);
         }
+
         public override object VisitCatchClause(CatchClause catchClause, CSharpAstResolver astResolver)
         {
             ResolveResult resolveResult = astResolver.Resolve(catchClause.Type);
@@ -346,6 +375,60 @@ namespace AnalysisIO.Visitor
                 }
             }
             return base.VisitCatchClause(catchClause, astResolver);
+        }
+
+        public override object VisitMethodDeclaration(MethodDeclaration methodDeclaration, CSharpAstResolver astResolver)
+        {
+            ResolveResult resolveResult = astResolver.Resolve(methodDeclaration);
+            if (resolveResult != null)
+            {
+                Tree.Tree t = SourceImporter.SourceImporter.Tree;
+
+                //1) target node
+                ClassNode targetNode = new ClassNode(resolveResult.Type.FullName, resolveResult);
+                targetNode = t.AddOrGetClassNode(resolveResult.Type.Namespace, targetNode);//override if already in tree with that node
+
+                if (targetNode != null)
+                {
+                    //2) caller node (can't be null)
+                    //find out class in which the invocation statement is found
+                    TypeDeclaration classDeclaration = methodDeclaration.Ancestors.Where(a => a is TypeDeclaration).Cast<TypeDeclaration>().First();
+                    //resolve the class declaration
+                    TypeResolveResult resolvedClass = astResolver.Resolve(classDeclaration) as TypeResolveResult;
+                    ClassNode callerNode = new ClassNode(resolvedClass.Type.FullName, resolvedClass);
+                    callerNode = t.AddOrGetClassNode(resolvedClass.Type.Namespace, callerNode); //override if already in tree with that node
+
+                    //3) edge (dependency) between caller and target
+                    callerNode.AddDependency(targetNode);
+                }
+            }
+            foreach (ParameterDeclaration methodDeclarationParameter in methodDeclaration.Parameters)
+            {
+                resolveResult = astResolver.Resolve(methodDeclarationParameter);
+                if (resolveResult != null)
+                {
+                    Tree.Tree t = SourceImporter.SourceImporter.Tree;
+
+                    //1) target node
+                    ClassNode targetNode = new ClassNode(resolveResult.Type.FullName, resolveResult);
+                    targetNode = t.AddOrGetClassNode(resolveResult.Type.Namespace, targetNode); //override if already in tree with that node
+
+                    if (targetNode != null)
+                    {
+                        //2) caller node (can't be null)
+                        //find out class in which the invocation statement is found
+                        TypeDeclaration classDeclaration = methodDeclaration.Ancestors.Where(a => a is TypeDeclaration).Cast<TypeDeclaration>().First();
+                        //resolve the class declaration
+                        TypeResolveResult resolvedClass = astResolver.Resolve(classDeclaration) as TypeResolveResult;
+                        ClassNode callerNode = new ClassNode(resolvedClass.Type.FullName, resolvedClass);
+                        callerNode = t.AddOrGetClassNode(resolvedClass.Type.Namespace, callerNode); //override if already in tree with that node
+
+                        //3) edge (dependency) between caller and target
+                        callerNode.AddDependency(targetNode);
+                    }
+                }
+            }
+            return base.VisitMethodDeclaration(methodDeclaration, astResolver);
         }
     }
 }
