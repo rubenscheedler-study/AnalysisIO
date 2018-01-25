@@ -15,6 +15,20 @@ var svg;
 var node;
 
 function renderDependencyComparison(olderJson, newerJson) {
+    prepareDependencyArea();
+
+    render("", JSON.parse(olderJson), JSON.parse(newerJson));
+    scrollTo("#dependencyArea");
+}
+
+function renderDependencies(treeJson) {
+    prepareDependencyArea();
+
+    renderSingleTree(JSON.parse(treeJson));
+    scrollTo("#dependencyArea");
+}
+
+function prepareDependencyArea() {
     $("#dependencyArea").html("");
     svg = d3.select("#dependencyArea").append("svg")
         .attr("width", diameter)
@@ -24,9 +38,15 @@ function renderDependencyComparison(olderJson, newerJson) {
 
     link = svg.append("g").selectAll(".link");
     node = svg.append("g").selectAll(".node");
+}
 
-    render("", JSON.parse(olderJson), JSON.parse(newerJson));
-    scrollTo("#dependencyArea");
+function renderSingleTree(tree) {
+
+    var classes = flatten(tree).filter(node => node.Dependencies !== undefined);
+
+    var root = packageHierarchy(classes).sum(function (d) { return d.size; });
+
+    configureTreeByRootNode(root);
 }
 
 function render(error, oldTree, newTree) {
@@ -38,6 +58,10 @@ function render(error, oldTree, newTree) {
 
     var root = packageHierarchy(classes).sum(function (d) { return d.size; });
 
+    configureTreeByRootNode(root);
+}
+
+function configureTreeByRootNode(root) {
     cluster(root);
 
 

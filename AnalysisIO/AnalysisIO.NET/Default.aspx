@@ -153,12 +153,12 @@
                         </a>
                     </div>
                     <div class="col-lg-3 col-md-6 col-sm-6 work">
-                        <a href="images/project_icon.png" class="work-box">
+                        <a href="images/project_icon.png" class="work-box" data-repo="OpenRA" data-project="OpenRA">
                             <img src="images/project_icon.png" alt="" />
                             <div class="overlay">
                                 <div class="overlay-caption">
-                                    <h5>Project Name</h5>
-                                    <p>Website Design</p>
+                                    <h5>OpenRA</h5>
+                                    <p>Game Engine</p>
                                 </div>
                             </div>
                             <!-- overlay -->
