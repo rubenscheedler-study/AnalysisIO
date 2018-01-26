@@ -47,8 +47,7 @@ namespace AnalysisIO_Console.Resolver
 					string typeGuid = match.Groups["TypeGuid"].Value;
 					string title    = match.Groups["Title"].Value;
 					string location = match.Groups["Location"].Value;
-					string guid     = match.Groups["Guid"].Value;
-					switch (typeGuid.ToUpperInvariant()) {
+				    switch (typeGuid.ToUpperInvariant()) {
 						case "{2150E333-8FDC-42A3-9474-1A3956D46DE8}": // Solution Folder
 							// ignore folders
 							break;

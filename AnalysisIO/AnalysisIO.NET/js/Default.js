@@ -61,7 +61,7 @@ function submitProjectClicked(e) {
         $("#repoInput").attr("data-selected", repo);
         $("#projectInput").attr("data-selected", project);
         
-        GetReleasesRequest(repo, project).done(function(response, status, xhr) {
+        GetReleasesRequest(repo, project).done(function(response) {
             fillReleaseDropdowns(response.d);
             scrollTo($("#releasePickBarrier"));
             $("#releasePicker").slideDown(1000);

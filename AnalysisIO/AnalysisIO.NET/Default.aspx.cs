@@ -13,20 +13,7 @@ namespace AnalysisIO.NET
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Start the child process.
-            Process p = new Process
-            {
-                StartInfo =
-                {
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    FileName = "C:/Users/Ruben/Source/Repos/AnalysisIO/AnalysisIO/AnalysisIO/bin/Debug/AnalysisIO_Console.exe",
-                    Arguments = "PowerShell PowerShell 6.0.0"
-                }
-            };
-            // Redirect the output stream of the child process.
-
-
+            
         }
 
         [WebMethod]

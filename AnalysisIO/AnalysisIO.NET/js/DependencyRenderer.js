@@ -161,14 +161,14 @@ function mouseouted() {
 function packageHierarchy(classes) {
     var map = {};
 
-    function find(Identifier, data) {
-        var node = map[Identifier], i;
+    function find(identifier, data) {
+        var node = map[identifier], i;
         if (!node) {
-            node = map[Identifier] = data || { Identifier: Identifier, children: [] };
-            if (Identifier.length) {
-                node.parent = find(Identifier.substring(0, i = Identifier.lastIndexOf(".")));
+            node = map[identifier] = data || { Identifier: identifier, children: [] };
+            if (identifier.length) {
+                node.parent = find(identifier.substring(0, i = identifier.lastIndexOf(".")));
                 node.parent.children.push(node);
-                node.key = Identifier.substring(i + 1);
+                node.key = identifier.substring(i + 1);
             }
         }
         return node;
