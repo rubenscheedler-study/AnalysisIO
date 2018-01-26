@@ -22,19 +22,19 @@ function submitReleasesClicked(e) {
         getDependencyComparison(tag1, tag2);
     }
     if (tag1 && !tag2) {
-        renderDependencies(tag1);
+        getDependencies(tag1);
         return;
     }
     if (!tag1 && tag2) {
-        renderDependencies(tag2);
+        getDependencies(tag2);
         return;
     }
     
 }
 
-function renderDependencies(tag) {
+function getDependencies(tag) {
     GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag).done(function(response) {
-
+        renderDependencies(JSON.parse(response.d)[tag]);
     });
 }
 
