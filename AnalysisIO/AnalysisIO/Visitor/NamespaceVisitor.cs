@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AnalysisIO.Tree;
+﻿using AnalysisIO_Console.Tree;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.CSharp.Resolver;
 using ICSharpCode.NRefactory.Semantics;
 
-namespace AnalysisIO.Visitor
+namespace AnalysisIO_Console.Visitor
 {
-    class NamespaceVisitor : DepthFirstAstVisitor<CSharpAstResolver, object>
+    internal class NamespaceVisitor : DepthFirstAstVisitor<CSharpAstResolver, object>
     {
 
         public override object VisitNamespaceDeclaration(NamespaceDeclaration namespaceDeclaration, CSharpAstResolver astResolver)
@@ -19,8 +14,11 @@ namespace AnalysisIO.Visitor
             NamespaceResolveResult resolvedNamespace = astResolver.Resolve(namespaceDeclaration) as NamespaceResolveResult;
 
             //create a node for the namespace in the tree
-            NamespaceNode node = new NamespaceNode {Identifier = resolvedNamespace.NamespaceName};
-            SourceImporter.SourceImporter.Tree.AddChild(node);
+            if (resolvedNamespace != null)
+            {
+                NamespaceNode node = new NamespaceNode {Identifier = resolvedNamespace.NamespaceName};
+                SourceImporter.SourceImporter.Tree.AddChild(node);
+            }
 
             return base.VisitNamespaceDeclaration(namespaceDeclaration, astResolver);
         }

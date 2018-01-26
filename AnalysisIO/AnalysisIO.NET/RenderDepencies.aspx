@@ -180,7 +180,7 @@ function mouseovered(d) {
       .classed("node--source", function(n) { return n.source; });
 }
 
-function mouseouted(d) {
+function mouseouted() {
   link
       .classed("link--target", false)
       .classed("link--source", false);

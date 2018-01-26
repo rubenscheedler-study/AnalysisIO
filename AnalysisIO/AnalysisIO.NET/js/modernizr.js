@@ -162,9 +162,7 @@ window.Modernizr = (function( window, document, undefined ) {
       var bool;
 
       injectElementWithStyles('@media ' + mq + ' { #' + mod + ' { position: absolute; } }', function( node ) {
-        bool = (window.getComputedStyle ?
-                  getComputedStyle(node, null) :
-                  node.currentStyle)['position'] == 'absolute';
+        bool = (window.getComputedStyle ?getComputedStyle(node, null) :node.currentStyle)['position'] == 'absolute';
       });
 
       return bool;

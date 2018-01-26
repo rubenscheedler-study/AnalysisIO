@@ -33,7 +33,7 @@ function submitReleasesClicked(e) {
 }
 
 function renderDependencies(tag) {
-    GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag).done(function(response, status, xhr) {
+    GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag).done(function(response) {
 
     });
 }
@@ -41,9 +41,9 @@ function renderDependencies(tag) {
 function getDependencyComparison(tag1, tag2) {
     var oldJson = "{}";
     var newJson = "{}";
-    GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag1).done(function (response, status, xhr) {
+    GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag1).done(function (response) {
         oldJson = JSON.parse(response.d)[tag1];
-        GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag2).done(function (response, status, xhr) {
+        GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag2).done(function (response) {
             newJson = JSON.parse(response.d)[tag2];
             renderDependencyComparison(oldJson, newJson);
         });
@@ -65,7 +65,6 @@ function submitProjectClicked(e) {
             fillReleaseDropdowns(response.d);
             scrollTo($("#releasePickBarrier"));
             $("#releasePicker").slideDown(1000);
-            //scrollTo($("#releasePicker"));
         });
     }
 }
@@ -96,7 +95,7 @@ function GetReleasesRequest(repo, project) {
             type: "POST",
             dataType: "json",
             contentType: "application/json",
-            error: function(xhr,status,errorThrown) {
+            error: function() {
                 failureWarning("Something went wrong while fetching the releases of the chosen project.");
             }
         });
@@ -110,7 +109,7 @@ function GetDependenciesOfOneReleaseRequest(repo, project, tagName) {
             type: "POST",
             dataType: "json",
             contentType: "application/json",
-            error: function (xhr, status, errorThrown) {
+            error: function () {
                 failureWarning("Something went wrong while fetching the dependencies of the release with tagname " + tagName);
             }
         });

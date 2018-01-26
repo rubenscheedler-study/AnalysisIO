@@ -78,9 +78,6 @@
                         <button class="btn btn-large with-top-margin" id="submitProject" title="The next step will be to select releases to compare.">Find Releases</button>
                     </div>
                 </div>
-                <!--<div class="col-sm">
-                    <button id="submitProject">Visualize Dependencies</button>
-                </div>-->
 
             </div>
         </section>

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace AnalysisIO.NET.Tree
@@ -13,7 +10,7 @@ namespace AnalysisIO.NET.Tree
         public List<ClassNode> DependencyNodes { get; }
         public List<string> Dependencies { get; }
 
-        public ClassNode() : base()
+        public ClassNode()
         {
             DependencyNodes = new List<ClassNode>();
             Dependencies = new List<string>();

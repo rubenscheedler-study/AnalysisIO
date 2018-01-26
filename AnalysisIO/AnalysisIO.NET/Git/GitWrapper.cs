@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
+﻿using System.Collections.Generic;
 using Octokit;
 
 namespace AnalysisIO.NET.Git
@@ -14,7 +10,7 @@ namespace AnalysisIO.NET.Git
         public static GitWrapper For(string repo, string project)
         {
             GitWrapper gw = new GitWrapper();
-            var client = new GitHubClient(new ProductHeaderValue(repo));
+            GitHubClient client = new GitHubClient(new ProductHeaderValue(repo));
             gw.Releases = client.Repository.Release.GetAll(repo, project).Result;
             return gw;
         }

@@ -1,17 +1,17 @@
-﻿using Octokit;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using AnalysisIO.Visitor;
+using AnalysisIO_Console.Resolver;
+using AnalysisIO_Console.Visitor;
 using ICSharpCode.NRefactory.CSharp.Resolver;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
-using Resolver;
+using Octokit;
 
-namespace AnalysisIO.SourceImporter
+namespace AnalysisIO_Console.SourceImporter
 {
     public class SourceImporter
     {

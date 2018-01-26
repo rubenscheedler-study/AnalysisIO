@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
 using Microsoft.Build.Evaluation;
@@ -28,7 +27,7 @@ using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Logging;
 
-namespace Resolver
+namespace AnalysisIO_Console.Resolver
 {
 	/// <summary>
 	/// Represents a C# project (.csproj file)
@@ -86,10 +85,12 @@ namespace Resolver
 			CompilerSettings.AllowUnsafeBlocks = GetBoolProperty(msbuildProject, "AllowUnsafeBlocks") ?? false;
 			CompilerSettings.CheckForOverflow = GetBoolProperty(msbuildProject, "CheckForOverflowUnderflow") ?? false;
 			string defineConstants = msbuildProject.GetPropertyValue("DefineConstants");
-			foreach (string symbol in defineConstants.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
-				CompilerSettings.ConditionalSymbols.Add(symbol.Trim());
-			
-			// Initialize the unresolved type system
+			foreach (string symbol in defineConstants.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+			{
+			    CompilerSettings.ConditionalSymbols.Add(symbol.Trim());
+			}
+
+		    // Initialize the unresolved type system
 			IProjectContent pc = new CSharpProjectContent();
 			pc = pc.SetAssemblyName(AssemblyName);
 			pc = pc.SetProjectFileName(fileName);
@@ -109,8 +110,8 @@ namespace Resolver
 		    pc = msbuildProject.GetItems("ProjectReference").Select(item => Path.Combine(msbuildProject.DirectoryPath, item.EvaluatedInclude)).Select(Path.GetFullPath).Aggregate(pc, (current, referencedFileName) => current.AddAssemblyReferences(new ProjectReference(referencedFileName)));
             ProjectContent = pc;
 		}
-		
-		IEnumerable<string> ResolveAssemblyReferences(Project project)
+
+	    private IEnumerable<string> ResolveAssemblyReferences(Project project)
 		{
 			// Use MSBuild to figure out the full path of the referenced assemblies
 			ProjectInstance projectInstance = project.CreateProjectInstance();
@@ -122,8 +123,8 @@ namespace Resolver
 			string baseDirectory = Path.GetDirectoryName(FileName);
 			return items.Select(i => Path.Combine(baseDirectory, i.GetMetadataValue("Identity")));
 		}
-		
-		static bool? GetBoolProperty(Project p, string propertyName)
+
+	    private static bool? GetBoolProperty(Project p, string propertyName)
 		{
 			string val = p.GetPropertyValue(propertyName);
 			bool result;

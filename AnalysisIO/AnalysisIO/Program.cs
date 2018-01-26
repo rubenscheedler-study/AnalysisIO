@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Newtonsoft.Json;
 
-namespace AnalysisIO
+namespace AnalysisIO_Console
 {
-    static class Program
+    internal static class Program
     {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             if (args.Length < 2)
             {
                 //Console.Out.Write("ERROR: Provide at a repository and a project.");TODO enable this
                 //return;
-                args = new string[] { "rationally", "rationally_visio", "0.1.5" };
+                args = new[] { "rationally", "rationally_visio", "0.1.5" };
             }
             string repo = args[0];
             string project = args[1];
