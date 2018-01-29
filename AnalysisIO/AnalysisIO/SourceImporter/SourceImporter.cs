@@ -10,6 +10,7 @@ using ICSharpCode.NRefactory.CSharp.Resolver;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using Octokit;
+using AnalysisIO_Console.Logger;
 
 namespace AnalysisIO_Console.SourceImporter
 {
@@ -44,6 +45,7 @@ namespace AnalysisIO_Console.SourceImporter
         {
             GitHubClient client = new GitHubClient(new ProductHeaderValue(repo));
             IReadOnlyList<Release> releases = await client.Repository.Release.GetAll(repo, project);
+            Log.Write($"[for one release]Releases Count:{releases.Count}\n");
             return ImportReleases(repo, project, releases.Where(r => r.TagName == release1).ToList());
         }
 
@@ -66,6 +68,7 @@ namespace AnalysisIO_Console.SourceImporter
 
             if (releases.Count == 0)
             {
+                Log.Write($"EXCEPTION no releases\n");
                 throw new Exception("No releases found or release name is invalid for this project");
             }
 
@@ -77,6 +80,7 @@ namespace AnalysisIO_Console.SourceImporter
             {
                 string releaseDirectory = $"{DefaultPath}/{repo}/{project}/{release.TagName}";
 
+                Log.Write($"releaseDirectory:{releaseDirectory}\n");
                 //reset tree
                 Tree = new Tree.Tree();
 
@@ -86,22 +90,28 @@ namespace AnalysisIO_Console.SourceImporter
 
                 if (!Directory.Exists(releaseDirectory))
                 {
+                    Log.Write($"creating directory:{releaseDirectory}\n");
                     Directory.CreateDirectory(releaseDirectory);
+                    Log.Write($"created directory:{releaseDirectory}\n");
                 }
                 //fetch archive and extract it
                 string releaseZipFilePath = releaseDirectory + "/archive.zip";
                 if (!File.Exists(releaseZipFilePath))
                 {
+                    Log.Write($"downloading archive:{releaseZipFilePath}\n");
                     webClient.DownloadFile(new Uri(release.ZipballUrl.Replace("https://", "http://")), releaseZipFilePath);
+                    Log.Write($"downloaded archive:{releaseZipFilePath}\n");
                 }
                 if (Directory.GetDirectories(releaseDirectory).Length == 0) //the archive extracts in its own folder. If a folder is created already the zip was extracted
                 {
                     try
                     {
                         entry.ExtractZip(releaseZipFilePath, releaseDirectory, null);
+                        Log.Write($"extracted zip\n");
                     }
                     catch (PathTooLongException)
                     {
+                        Log.Write($"EXCEPTION PathTooLongException\n");
                         DeleteDirectory(releaseDirectory, true);
                         throw;
                     }
@@ -151,14 +161,17 @@ namespace AnalysisIO_Console.SourceImporter
             else
             {
                 string solutionFilePath = Directory.GetFiles(releaseDirectory, "*.sln", SearchOption.AllDirectories).First();
+                Log.Write($"solutionFilePath:{solutionFilePath}\n");
                 Tree.Identifier = solutionFilePath;
                 Solution solution = new Solution(solutionFilePath);
-
+                Log.Write($"created solution\n");
                 BuildTree(solution);
-
+                Log.Write($"built tree\n");
                 //generate json and save it
                 jsonTree = JsonConvert.SerializeObject(Tree);
+                Log.Write($"serialized tree\n");
                 SaveTree(jsonTree, releaseDirectory);
+                Log.Write($"saved tree\n");
             }
             return jsonTree;
         }

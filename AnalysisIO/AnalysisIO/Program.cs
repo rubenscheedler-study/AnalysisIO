@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using AnalysisIO_Console.Logger;
 using Newtonsoft.Json;
 
 namespace AnalysisIO_Console
@@ -22,12 +23,13 @@ namespace AnalysisIO_Console
             }
             string repo = args[0];
             string project = args[1];
-
+            Log.Write($"repo{repo},project:{project}\n");
             Dictionary<string, string> versionTrees = null;
             try
             {
                 if (args.Length == 2) //fetch all trees of the project
                 {
+                    
                     versionTrees = Task.Run(() => new SourceImporter.SourceImporter().ImportSource(repo, project)).GetAwaiter().GetResult();
                 }
                 if (args.Length == 3) //fetch only the tree of the release specified in the third argument
