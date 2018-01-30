@@ -15,14 +15,14 @@ var svg;
 var node;
 
 function renderDependencyComparison(olderJson, newerJson) {
-    prepareDependencyArea();
+    //prepareDependencyArea();
 
     render("", JSON.parse(olderJson), JSON.parse(newerJson));
     scrollTo("#dependencyArea");
 }
 
 function renderDependencies(treeJson) {
-    prepareDependencyArea();
+   // prepareDependencyArea();
 
     renderSingleTree(JSON.parse(treeJson));
     scrollTo("#dependencyArea");
@@ -45,7 +45,12 @@ function renderSingleTree(tree) {
     var classes = flatten(tree).filter(node => node.Dependencies !== undefined);
 
     var root = packageHierarchy(classes).sum(function (d) { return d.size; });
-
+    diameter = 550 + 4 * classes.length,
+    radius = diameter / 2,
+    innerRadius = radius - 240;
+    cluster = d3.cluster()
+        .size([360, innerRadius]);
+    prepareDependencyArea();
     configureTreeByRootNode(root);
 }
 
@@ -57,7 +62,12 @@ function render(error, oldTree, newTree) {
     var classes = defineChanges(oldClasses, newClasses);
 
     var root = packageHierarchy(classes).sum(function (d) { return d.size; });
-
+    diameter = 550 + 4 * classes.length,
+    radius = diameter / 2,
+    innerRadius = radius - 240;
+    cluster = d3.cluster()
+        .size([360, innerRadius]);
+    prepareDependencyArea();
     configureTreeByRootNode(root);
 }
 

@@ -72,7 +72,7 @@
                     <div class="form-group col-sm-4">
                         <label for="projectInput">Project</label>
                         <input type="text" class="form-control" id="projectInput" aria-describedby="projectHelp" placeholder="Rationally_visio" />
-                        <small id="projectHelp" class="form-text text-muted">Enter one of the C# projects in the choosen repository or leave empty for an example.</small>
+                        <small id="projectHelp" class="form-text text-muted">Enter one of the C# projects in the choosen repository or leave empty for the example repository.</small>
                     </div>
                     <div class="col-sm-4">
                         <button class="btn btn-large with-top-margin" id="submitProject" title="The next step will be to select releases to compare.">Find Releases</button>
