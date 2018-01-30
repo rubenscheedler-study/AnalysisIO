@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Web.Script.Services;
 using System.Web.Services;
@@ -28,11 +29,23 @@ namespace AnalysisIO.NET
         [ScriptMethod]
         public static string Dependencies(string repo, string projectName, string tagName)
         {// Redirect the output stream of the child process.
-            using (Process p = new Process{StartInfo = {UseShellExecute = false, RedirectStandardOutput = true,
-                                            FileName = "C:/Users/R. Kruizinga/Source/Repos/AnalysisIO/AnalysisIO/AnalysisIO/bin/Debug/AnalysisIO_Console.exe", Arguments = $"{repo} {projectName} {tagName}"}})
+            #if DEBUG
+        //string EXE_PATH_DIR = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Source/Repos/AnalysisIO/AnalysisIO/AnalysisIO/bin/Debug/";
+#else
+        //string EXE_PATH_DIR = AppDomain.CurrentDomain.BaseDirectory + "/";
+#endif
+            string EXE_PATH_DIR = AppDomain.CurrentDomain.BaseDirectory + "bin\\";
+            using (Process p = new Process{StartInfo = {UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true,
+                    
+                                            FileName = EXE_PATH_DIR + "AnalysisIO_Console.exe", Arguments = $"{repo} {projectName} {tagName}"}})
             {
                 p.Start();
+                //string error = p.StandardError.ReadToEnd();
                 string s = p.StandardOutput.ReadToEnd();
+                if (s == "")
+                {
+                    //s = error;
+                }
                 return s;
             }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using AnalysisIO_Console.Logger;
 using Newtonsoft.Json;
 
 namespace AnalysisIO_Console
@@ -25,6 +26,7 @@ namespace AnalysisIO_Console
             TextWriter consoleOut = Console.Out;
             Console.SetOut(TextWriter.Null); //Symbols that can not be resolved throw an error that ends up in our output. Therefore, disable the output till we need it.
 
+            Log.Write($"repo{repo},project:{project}\n");
             Dictionary<string, string> versionTrees = null;
             try
             {
