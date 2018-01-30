@@ -20,13 +20,17 @@ function submitReleasesClicked(e) {
 
     if (tag1 && tag2) {
         getDependencyComparison(tag1, tag2);
+        $("#legend-for-double-tree").show();
+        return;
     }
     if (tag1 && !tag2) {
         getDependencies(tag1);
+        $("#legend-for-double-tree").show();
         return;
     }
     if (!tag1 && tag2) {
         getDependencies(tag2);
+        $("#legend-for-double-tree").show();
         return;
     }
     
