@@ -23,9 +23,11 @@
 
     .linkAdded {
         stroke: #2ca02c;
+        stroke-width: 2px;
     }
     .linkDeleted {
         stroke: #d62728;
+        stroke-width: 2px;
     }
 
     .node:hover,
@@ -35,11 +37,13 @@
     }
 
     .node--source {
-        fill: #2ca02c;
+        /*fill: #2ca02c;*/
+        fill: #ff8800;
     }
 
     .node--target {
-        fill: #d62728;
+        /*fill: #d62728;*/
+        fill: #65349c;
     }
 
     .link--source,
@@ -56,9 +60,44 @@
     }
 
     .link--source {
-        stroke: #d62728;
+        /*stroke: #d62728;*/
+        stroke: #65349c;
     }
 
     .link--target {
-        stroke: #2ca02c;
+        /*stroke: #2ca02c;*/
+        stroke: #ff8800;
+    }
+
+    .legend-green {
+        color: #2ca02c;
+        font-weight: bold;
+        width: 200px;
+    }
+
+    .legend-red {
+        color: #d62728;
+        font-weight: bold;
+        width: 200px;
+    }
+
+    .legend-orange {
+        color: #ff8800;
+        font-weight: bold;
+        width: 200px;
+    }
+
+    .legend-purple {
+        color: #65349c;
+        font-weight: bold;
+        width: 200px;
+    }
+
+    #legend-for-double-tree, #legend-for-single-tree {
+        width: 960px;
+        display: none;
+        
+    }
+    .legend-table td {
+        text-align: left;
     }

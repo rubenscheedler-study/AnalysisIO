@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/jquery.fancybox.css" />
     <link rel="stylesheet" href="css/main.css" />
-    
+
     <link rel="stylesheet" href="css/responsive.css" />
     <link rel="stylesheet" href="css/animate.min.css" />
     <link rel="stylesheet" href="css/style.css" />
@@ -81,9 +81,9 @@
 
             </div>
         </section>
-        
+
         <div id="releasePickBarrier"></div>
-        
+
         <!-- RELEASE -->
         <section id="releasePicker" class="section">
             <div class="container">
@@ -112,14 +112,37 @@
                 </div>
             </div>
         </section>
-        
+
         <div id="dependencyBarrier"></div>
 
         <!-- DEPENDENCIES -->
         <section id="dependencySection" class="section">
             <div class="container">
                 <div id="dependencyArea">
-                    
+                </div>
+            </div>
+            <div class="container">
+                <div id="legend-for-double-tree">
+                    <div class="row">
+                        <table class=" legend-table table col-sm-4">
+                            <tr>
+                                <td class="legend-orange">Orange</td>
+                                <td>Ingoing dependency.</td>
+                            </tr>
+                            <tr>
+                                <td class="legend-purple">Purple</td>
+                                <td>Outgoing dependency.</td>
+                            </tr>
+                            <tr>
+                                <td class="legend-green">Green</td>
+                                <td>Dependency introduced in the newer release.</td>
+                            </tr>
+                            <tr>
+                                <td class="legend-red">Red</td>
+                                <td>Dependency removed since the newer release.</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </section>
@@ -146,7 +169,7 @@
                     </div>
                     <div class="col-lg-3 col-md-6 col-sm-6 work">
                         <a href="images/project_icon.png" class="work-box" data-repo="OpenRA" data-project="OpenRA">
-                            <img src="images/project_icon.png" alt="" />
+                            <img src="images/project_icon_openra.png" alt="" />
                             <div class="overlay">
                                 <div class="overlay-caption">
                                     <h5>OpenRA</h5>
@@ -158,7 +181,7 @@
                     </div>
                     <div class="col-lg-3 col-md-6 col-sm-6 work">
                         <a href="images/project_icon.png" class="work-box" data-repo="hypzeh" data-project="Smallify">
-                            <img src="images/project_icon.png" alt="" />
+                            <img src="images/project_icon_spotify.png" alt="" />
                             <div class="overlay">
                                 <div class="overlay-caption">
                                     <h5>Smallify</h5>
@@ -170,7 +193,7 @@
                     </div>
                     <div class="col-lg-3 col-md-6 col-sm-6 work">
                         <a href="images/project_icon.png" class="work-box" data-repo="rubenscheedler" data-project="AnalysisIO">
-                            <img src="images/project_icon.png" alt="" />
+                            <img src="images/project_icon_analysisio.png" alt="" />
                             <div class="overlay">
                                 <div class="overlay-caption">
                                     <h5>Analysis.IO</h5>
@@ -180,7 +203,7 @@
                             <!-- overlay -->
                         </a>
                     </div>
-                    
+
                 </div>
             </div>
         </section>
