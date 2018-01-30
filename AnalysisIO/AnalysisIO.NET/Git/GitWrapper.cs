@@ -12,6 +12,7 @@ namespace AnalysisIO.NET.Git
             GitWrapper gw = new GitWrapper();
             GitHubClient client = new GitHubClient(new ProductHeaderValue(repo));
             gw.Releases = client.Repository.Release.GetAll(repo, project).Result;
+            var x = client.Repository.Branch.GetAll(repo, project).Result;
             return gw;
         }
     }
