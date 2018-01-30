@@ -139,7 +139,7 @@
                 <div class="row no-gutter">
                     <div class="col-lg-3 col-md-6 col-sm-6 work">
                         <a href="images/project_icon.png" class="work-box" data-repo="Rationally" data-project="Rationally_Visio">
-                            <img src="images/project_icon.png" alt="" />
+                            <img src="images/project_icon_rationally.png" alt="" />
                             <div class="overlay">
                                 <div class="overlay-caption">
                                     <h5>Rationally</h5>
