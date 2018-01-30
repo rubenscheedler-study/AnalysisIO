@@ -79,7 +79,7 @@ namespace AnalysisIO_Console.Resolver
 			FileName = fileName;
 			
 			// Use MSBuild to open the .csproj
-			Project msbuildProject = new Project(fileName);
+			Project msbuildProject = new Project(fileName, null, "14.0");
 			// Figure out some compiler settings
 			AssemblyName = msbuildProject.GetPropertyValue("AssemblyName");
 			CompilerSettings.AllowUnsafeBlocks = GetBoolProperty(msbuildProject, "AllowUnsafeBlocks") ?? false;
