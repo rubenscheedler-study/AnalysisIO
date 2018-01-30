@@ -89,14 +89,14 @@
             <div class="container">
                 <div class="row">
                     <div class="form-group col-sm-4">
-                        <label for="releaseDropdown1">Release #1</label>
+                        <label for="releaseDropdown1">Release #1 (older)</label>
                         <select class="form-control" id="releaseDropdown1" aria-describedby="releaseHelp1">
                             <option value="default">Pick a release...</option>
                         </select>
                         <small id="releaseHelp1" class="form-text text-muted">Pick one of the releases.</small>
                     </div>
                     <div class="form-group col-sm-4">
-                        <label for="releaseDropdown2">Release #2</label>
+                        <label for="releaseDropdown2">Release #2 (newer)</label>
                         <select class="form-control" id="releaseDropdown2" aria-describedby="releaseHelp2">
                             <option value="default">Pick a release...</option>
                         </select>
@@ -106,11 +106,6 @@
                         <div class="row">
                             <div class="col">
                                 <button class="btn btn-large with-top-margin" id="submitReleases">Visualize Dependencies</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <button class="btn btn-large with-top-margin" id="DownloadReleases">Download All Releases (TODO)</button>
                             </div>
                         </div>
                     </div>
@@ -162,24 +157,24 @@
                         </a>
                     </div>
                     <div class="col-lg-3 col-md-6 col-sm-6 work">
-                        <a href="images/work-3.jpg" class="work-box">
+                        <a href="images/project_icon.png" class="work-box" data-repo="hypzeh" data-project="Smallify">
                             <img src="images/project_icon.png" alt="" />
                             <div class="overlay">
                                 <div class="overlay-caption">
-                                    <h5>Project Name</h5>
-                                    <p>Branding</p>
+                                    <h5>Smallify</h5>
+                                    <p>Compact spotify plugin</p>
                                 </div>
                             </div>
                             <!-- overlay -->
                         </a>
                     </div>
                     <div class="col-lg-3 col-md-6 col-sm-6 work">
-                        <a href="images/work-4.jpg" class="work-box">
+                        <a href="images/project_icon.png" class="work-box" data-repo="rubenscheedler" data-project="AnalysisIO">
                             <img src="images/project_icon.png" alt="" />
                             <div class="overlay">
                                 <div class="overlay-caption">
-                                    <h5>Project Name</h5>
-                                    <p>Graphic Design</p>
+                                    <h5>Analysis.IO</h5>
+                                    <p>This application!</p>
                                 </div>
                             </div>
                             <!-- overlay -->
