@@ -36,7 +36,6 @@ namespace AnalysisIO.NET
 #endif
             string EXE_PATH_DIR = AppDomain.CurrentDomain.BaseDirectory + "bin\\";
             using (Process p = new Process{StartInfo = {UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true,
-                    
                                             FileName = EXE_PATH_DIR + "AnalysisIO_Console.exe", Arguments = $"{repo} {projectName} {tagName}"}})
             {
                 p.Start();

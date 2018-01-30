@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using AnalysisIO_Console.Logger;
+using Microsoft.Build.Exceptions;
 using Newtonsoft.Json;
 
 namespace AnalysisIO_Console
@@ -19,7 +20,7 @@ namespace AnalysisIO_Console
             {
                 //Console.Out.Write("ERROR: Provide at a repository and a project.");TODO enable this
                 //return;
-                args = new[] { "rationally", "rationally_visio", "0.1.5" };
+                args = new[] { "Hypzeh", "Smallify", "v1.0.0" };
             }
             string repo = args[0];
             string project = args[1];
@@ -55,6 +56,11 @@ namespace AnalysisIO_Console
             {
                 Console.SetOut(consoleOut);
                 Console.Out.Write("ERROR: Something went wrong retrieving the repository from GIT.");
+            }
+            catch (InvalidProjectFileException ex)
+            {
+                Console.SetOut(consoleOut);
+                Console.Out.Write("ERROR: The solution contains a project that is not supported (C# 6.0 or higher).");
             }
             catch (Exception ex)
             {
