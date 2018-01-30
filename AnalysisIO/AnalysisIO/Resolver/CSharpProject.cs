@@ -118,7 +118,7 @@ namespace AnalysisIO_Console.Resolver
 			projectInstance.SetProperty("BuildingProject", "false");
 			project.SetProperty("DesignTimeBuild", "true");
 			
-			projectInstance.Build("ResolveAssemblyReferences", new [] { new ConsoleLogger(LoggerVerbosity.Minimal) });
+			projectInstance.Build("ResolveAssemblyReferences", null);
 			ICollection<ProjectItemInstance> items = projectInstance.GetItems("_ResolveAssemblyReferenceResolvedFiles");
 			string baseDirectory = Path.GetDirectoryName(FileName);
 			return items.Select(i => Path.Combine(baseDirectory, i.GetMetadataValue("Identity")));

@@ -55,7 +55,7 @@ namespace AnalysisIO_Console.Resolver
 							Projects.Add(new CSharpProject(this, title, Path.Combine(Directory, location)));
 							break;
 						default:
-							Console.WriteLine(@"Project {0} has unsupported type {1}", location, typeGuid);
+							//Console.WriteLine(@"Project {0} has unsupported type {1}", location, typeGuid);
 							break;
 					}
 				}
