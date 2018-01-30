@@ -167,6 +167,9 @@ function packageHierarchy(classes) {
             node = map[identifier] = data || { Identifier: identifier, children: [] };
             if (identifier.length) {
                 node.parent = find(identifier.substring(0, i = identifier.lastIndexOf(".")));
+                if (node.parent.Children) {
+                    node.parent = node.parent.parent;
+                }
                 node.parent.children.push(node);
                 node.key = identifier.substring(i + 1);
             }
