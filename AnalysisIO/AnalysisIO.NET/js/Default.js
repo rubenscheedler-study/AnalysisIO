@@ -83,7 +83,7 @@ function submitProjectClicked(e) {
                 scrollTo($("#releasePickBarrier"));
                 $("#releasePicker").slideDown(1000);
             } else {
-                alert("No tagged releases could be found for this project");
+                alert("No tagged releases could be found for this project or the github api limit has been exceeded");
             }
         });
     }

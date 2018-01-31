@@ -29,7 +29,7 @@ namespace AnalysisIO.NET
                 project = GitWrapper.For(repo, projectName);
                 return project.Releases.ToList().Select(d => DownloadedRelease.MarkAsDownloadedIfDownloaded(repo, projectName, d)).ToList();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new List<DownloadedRelease>();
             }
