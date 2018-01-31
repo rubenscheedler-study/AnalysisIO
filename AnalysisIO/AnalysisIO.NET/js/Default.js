@@ -37,8 +37,14 @@ function submitReleasesClicked(e) {
 }
 
 function getDependencies(tag) {
-    GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag).done(function(response) {
-        renderDependencies(JSON.parse(response.d)[tag]);
+    GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag).done(function (response) {
+        var json = "{}";
+        json = JSON.parse(response.d);
+        if (json.ERROR) {
+            alert(json.ERROR);
+        } else {
+            renderDependencies(json[tag]);
+        }
     });
 }
 
@@ -46,10 +52,18 @@ function getDependencyComparison(tag1, tag2) {
     var oldJson = "{}";
     var newJson = "{}";
     GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag1).done(function (response) {
-        oldJson = JSON.parse(response.d)[tag1];
+        oldJson = JSON.parse(response.d);
+        if (oldJson.ERROR) {
+            alert(oldJson.ERROR);
+            return;
+        }
         GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag2).done(function (response) {
-            newJson = JSON.parse(response.d)[tag2];
-            renderDependencyComparison(oldJson, newJson);
+            newJson = JSON.parse(response.d);
+            if (newJson.ERROR) {
+                alert(newJson.ERROR);
+                return;
+            }
+            renderDependencyComparison(oldJson[tag1], newJson[tag2]);
         });
     });
 }
@@ -65,10 +79,14 @@ function submitProjectClicked(e) {
         $("#repoInput").attr("data-selected", repo);
         $("#projectInput").attr("data-selected", project);
         
-        GetReleasesRequest(repo, project).done(function(response) {
-            fillReleaseDropdowns(response.d);
-            scrollTo($("#releasePickBarrier"));
-            $("#releasePicker").slideDown(1000);
+        GetReleasesRequest(repo, project).done(function (response) {
+            if (response.d.length) {
+                fillReleaseDropdowns(response.d);
+                scrollTo($("#releasePickBarrier"));
+                $("#releasePicker").slideDown(1000);
+            } else {
+                alert("No tagged releases could be found for this project");
+            }
         });
     }
 }

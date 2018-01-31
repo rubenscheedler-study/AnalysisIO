@@ -43,15 +43,21 @@ function prepareDependencyArea() {
 function renderSingleTree(tree) {
 
     var classes = flatten(tree).filter(node => node.Dependencies !== undefined);
-
+    if (classes.length === 0) {
+        alert("No suitable classes in this project could be found");
+        return;
+    }
     var root = packageHierarchy(classes).sum(function (d) { return d.size; });
     diameter = 550 + 4 * classes.length,
     radius = diameter / 2,
     innerRadius = radius - 240;
     cluster = d3.cluster()
         .size([360, innerRadius]);
-    prepareDependencyArea();
-    configureTreeByRootNode(root);
+    if (classes.length < 500 ||
+        confirm("This project contains a large number of classes, rendering may take a long time and end up huge. Are you sure you want to continue?")) {
+        prepareDependencyArea();
+        configureTreeByRootNode(root);
+    }
 }
 
 function render(error, oldTree, newTree) {
@@ -60,15 +66,21 @@ function render(error, oldTree, newTree) {
     var newClasses = flatten(newTree).filter(node => node.Dependencies !== undefined);
     var oldClasses = flatten(oldTree).filter(node => node.Dependencies !== undefined);
     var classes = defineChanges(oldClasses, newClasses);
-
+    if (classes.length === 0) {
+        alert("No suitable classes in this project could be found");
+        return;
+    }
     var root = packageHierarchy(classes).sum(function (d) { return d.size; });
     diameter = 550 + 4 * classes.length,
     radius = diameter / 2,
     innerRadius = radius - 240;
     cluster = d3.cluster()
         .size([360, innerRadius]);
-    prepareDependencyArea();
-    configureTreeByRootNode(root);
+    if (classes.length < 500 ||
+        confirm("This project contains a large number of classes, rendering may take a long time and end up huge. Are you sure you want to continue?")) {
+        prepareDependencyArea();
+        configureTreeByRootNode(root);
+    }
 }
 
 function configureTreeByRootNode(root) {

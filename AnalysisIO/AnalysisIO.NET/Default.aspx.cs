@@ -39,12 +39,7 @@ namespace AnalysisIO.NET
                                             FileName = EXE_PATH_DIR + "AnalysisIO_Console.exe", Arguments = $"{repo} {projectName} {tagName}"}})
             {
                 p.Start();
-                //string error = p.StandardError.ReadToEnd();
                 string s = p.StandardOutput.ReadToEnd();
-                if (s == "")
-                {
-                    //s = error;
-                }
                 return s;
             }
 
