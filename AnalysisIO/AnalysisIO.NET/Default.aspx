@@ -117,6 +117,9 @@
 
         <!-- DEPENDENCIES -->
         <section id="dependencySection" class="section">
+            <div id="preloader_container" class="container">
+                <img src="images/preloader.gif"/>
+            </div>
             <div class="container">
                 <div id="dependencyArea">
                 </div>

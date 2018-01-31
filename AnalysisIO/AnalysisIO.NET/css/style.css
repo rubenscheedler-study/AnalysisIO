@@ -101,3 +101,11 @@
     .legend-table td {
         text-align: left;
     }
+    #preloader_container {
+        display: none;
+    }
+    #preloader_container img {
+            margin-left: auto;
+    margin-right: auto;
+    display: inherit;
+    }

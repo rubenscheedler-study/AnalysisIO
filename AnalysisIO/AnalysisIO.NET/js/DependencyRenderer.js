@@ -17,19 +17,21 @@ var node;
 function renderDependencyComparison(olderJson, newerJson) {
     //prepareDependencyArea();
 
+    $("#preloader_container").hide();
     render("", JSON.parse(olderJson), JSON.parse(newerJson));
     scrollTo("#dependencyArea");
 }
 
 function renderDependencies(treeJson) {
-   // prepareDependencyArea();
+    // prepareDependencyArea();
 
+    $("#preloader_container").hide();
     renderSingleTree(JSON.parse(treeJson));
     scrollTo("#dependencyArea");
 }
 
 function prepareDependencyArea() {
-    $("#dependencyArea").html("");
+    
     svg = d3.select("#dependencyArea").append("svg")
         .attr("width", diameter)
         .attr("height", diameter)

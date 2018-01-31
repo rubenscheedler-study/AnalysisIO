@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Web;
 using System.Web.Script.Services;
 using System.Web.Services;
 using Octokit;
@@ -19,22 +21,23 @@ namespace AnalysisIO.NET
 
         [WebMethod]
         [ScriptMethod]
-        public static List<Release> Releases(string repo, string projectName)
+        public static List<DownloadedRelease> Releases(string repo, string projectName)
         {
             GitWrapper project = GitWrapper.For(repo, projectName);
-            return project.Releases.ToList();
+            return project.Releases.ToList().Select(d => DownloadedRelease.MarkAsDownloadedIfDownloaded(repo,projectName,d)).ToList();
         }
 
         [WebMethod]
         [ScriptMethod]
         public static string Dependencies(string repo, string projectName, string tagName)
         {// Redirect the output stream of the child process.
-            #if DEBUG
-        //string EXE_PATH_DIR = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Source/Repos/AnalysisIO/AnalysisIO/AnalysisIO/bin/Debug/";
+#if DEBUG
+            string EXE_PATH_DIR = AppDomain.CurrentDomain.BaseDirectory + "..\\AnalysisIO\\bin\\Debug\\";
 #else
-        //string EXE_PATH_DIR = AppDomain.CurrentDomain.BaseDirectory + "/";
-#endif
             string EXE_PATH_DIR = AppDomain.CurrentDomain.BaseDirectory + "bin\\";
+#endif
+            //string EXE_PATH_DIR2 = AppDomain.CurrentDomain.BaseDirectory + "bin\\";
+            //string EXE_PATH_DIR3 = HttpContext.Current.Server.MapPath("/") + "bin\\";
             using (Process p = new Process{StartInfo = {UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true,
                                             FileName = EXE_PATH_DIR + "AnalysisIO_Console.exe", Arguments = $"{repo} {projectName} {tagName}"}})
             {

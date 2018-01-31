@@ -20,23 +20,22 @@ function submitReleasesClicked(e) {
 
     if (tag1 && tag2) {
         getDependencyComparison(tag1, tag2);
-        $("#legend-for-double-tree").show();
         return;
     }
     if (tag1 && !tag2) {
         getDependencies(tag1);
-        $("#legend-for-double-tree").show();
         return;
     }
     if (!tag1 && tag2) {
         getDependencies(tag2);
-        $("#legend-for-double-tree").show();
         return;
     }
-    
+    $("#legend-for-double-tree").show();
 }
 
 function getDependencies(tag) {
+    $("#dependencyArea").html("");
+    $("#preloader_container").show();
     GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag).done(function(response) {
         renderDependencies(JSON.parse(response.d)[tag]);
     });
@@ -45,6 +44,8 @@ function getDependencies(tag) {
 function getDependencyComparison(tag1, tag2) {
     var oldJson = "{}";
     var newJson = "{}";
+    $("#dependencyArea").html("");
+    $("#preloader_container").show();
     GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag1).done(function (response) {
         oldJson = JSON.parse(response.d)[tag1];
         GetDependenciesOfOneReleaseRequest(getRepo(), getProject(), tag2).done(function (response) {
@@ -126,5 +127,11 @@ function failureWarning(message) {
 function fillReleaseDropdowns(releases) {
     $("#releaseDropdown1,#releaseDropdown2").html("");
     $("#releaseDropdown1,#releaseDropdown2").append("<option value=''>No release selected...</option>");
-    releases.forEach(r => $("#releaseDropdown1,#releaseDropdown2").append("<option value='"+r.TagName+"'>"+r.Name+ "(" + r.TagName + ")</option>"));
+    releases.forEach(r => $("#releaseDropdown1,#releaseDropdown2").append("<option value='" + r.Release.TagName + "'>" + r.Release.Name + "(" + r.Release.TagName + ") "+ (r.IsDownloaded ? "(downloaded)" : "") + "</option>"));
+    if (releases.length > 0) {
+        $($("#releaseDropdown2 option")[1]).attr("selected", "selected"); //"no release selected" is first
+    }
+    if (releases.length > 1) {
+        $($("#releaseDropdown1 option")[2]).attr("selected", "selected"); //"no release selected" is first
+    }
 }
