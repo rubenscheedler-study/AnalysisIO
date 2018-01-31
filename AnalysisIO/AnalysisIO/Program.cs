@@ -18,9 +18,9 @@ namespace AnalysisIO_Console
         {
             if (args.Length < 2)
             {
-                // Console.Out.Write("{\"ERROR\": \"Provide at a repository and a project.\"}");
-                // return;
-                args = new[] { "github", "fetch", "v2.0.3" };
+                 Console.Out.Write("{\"ERROR\": \"Provide at a repository and a project.\"}");
+                 return;
+                //args = new[] { "github", "fetch", "v2.0.3" };
             }
             string repo = args[0];
             string project = args[1];
