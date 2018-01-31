@@ -18,9 +18,9 @@ namespace AnalysisIO_Console
         {
             if (args.Length < 2)
             {
-                Console.Out.Write("{\"ERROR\": \"Provide at a repository and a project.\"}");
-                return;
-                
+                // Console.Out.Write("{\"ERROR\": \"Provide at a repository and a project.\"}");
+                // return;
+                args = new[] { "github", "fetch", "v2.0.3" };
             }
             string repo = args[0];
             string project = args[1];
@@ -57,15 +57,20 @@ namespace AnalysisIO_Console
                 Console.SetOut(consoleOut);
                 Console.Out.Write("{\"ERROR\": \"Something went wrong retrieving the repository from GIT.\"}");
             }
-            catch (InvalidProjectFileException ex)
+            catch (InvalidProjectFileException)
             {
                 Console.SetOut(consoleOut);
                 Console.Out.Write("{\"ERROR\": \"The solution contains a project that is not supported (C# 6.0 or higher).\"}");
             }
+            catch (InvalidOperationException)
+            {
+                Console.SetOut(consoleOut);
+                Console.Out.Write("{\"ERROR\": \"The repository may not contain a valid C# solution or C# project file.\"}");
+            }
             catch (Exception ex)
             {
                 Console.SetOut(consoleOut);
-                Console.Out.Write("{\"ERROR\": " + ex.Message);
+                Console.Out.Write("{\"ERROR\": \" An Error has occurred\"}");
             }
 
 

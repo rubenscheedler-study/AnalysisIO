@@ -23,8 +23,16 @@ namespace AnalysisIO.NET
         [ScriptMethod]
         public static List<DownloadedRelease> Releases(string repo, string projectName)
         {
-            GitWrapper project = GitWrapper.For(repo, projectName);
-            return project.Releases.ToList().Select(d => DownloadedRelease.MarkAsDownloadedIfDownloaded(repo,projectName,d)).ToList();
+            GitWrapper project;
+            try
+            {
+                project = GitWrapper.For(repo, projectName);
+                return project.Releases.ToList().Select(d => DownloadedRelease.MarkAsDownloadedIfDownloaded(repo, projectName, d)).ToList();
+            }
+            catch (Exception)
+            {
+                return new List<DownloadedRelease>();
+            }
         }
 
         [WebMethod]
