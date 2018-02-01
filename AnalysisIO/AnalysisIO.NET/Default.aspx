@@ -65,14 +65,14 @@
             <div class="container">
                 <div class="row">
                     <div class="form-group col-sm-4">
-                        <label for="repoInput">Repository</label>
+                        <label for="repoInput">Owner</label>
                         <input type="text" class="form-control" id="repoInput" aria-describedby="repoHelp" placeholder="Rationally" />
-                        <small id="repoHelp" class="form-text text-muted">Enter the name of a repository or leave empty for an example.</small>
+                        <small id="repoHelp" class="form-text text-muted">Enter the name of a repository's owner (leave empty for an example).</small>
                     </div>
                     <div class="form-group col-sm-4">
-                        <label for="projectInput">Project</label>
+                        <label for="projectInput">Repository</label>
                         <input type="text" class="form-control" id="projectInput" aria-describedby="projectHelp" placeholder="Rationally_visio" />
-                        <small id="projectHelp" class="form-text text-muted">Enter one of the C# projects in the choosen repository or leave empty for the example repository.</small>
+                        <small id="projectHelp" class="form-text text-muted">Enter one of the owner's C# repositories (leave empty for an example)</small>
                     </div>
                     <div class="col-sm-4">
                         <button class="btn btn-large with-top-margin" id="submitProject" title="The next step will be to select releases to compare.">Find Releases</button>
